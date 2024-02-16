@@ -2,11 +2,28 @@
 import Image from "next/image";
 import { useForm } from 'react-hook-form'
 // import {DevTool} from '@hookform/devtools'
-
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 
 export default function Home() {
-  const {register , control , handleSubmit , formState} = useForm();
+  const schema = yup.object({
+    email: yup
+      .string()
+      .email("Email format is not valid !")
+      .required(""),
+    password : yup
+    .string()
+    .required("Password is required")
+    .min(8,"Password must contain at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/,
+      'Password must contain at least 1 lowercase, 1 uppercase, and 1 special character'
+    ),
+  });
+  const {register , control , handleSubmit , formState} = useForm({
+    resolver: yupResolver(schema),
+  });
   const { errors} = formState
 
   const onSubmit = (data)=>{
@@ -54,22 +71,10 @@ export default function Home() {
        </div>
         <form action="" onSubmit={handleSubmit(onSubmit)} className="w-[28vw] h-[43vh]" noValidate>
         <label htmlFor="email" className="text-[#182467]">Email*</label>
-        <input type="email" id="email" {...register("email" , {pattern : {
-          value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-          message : "Invalid email format"
-        }})} className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4  mt-2"/> 
+        <input type="email" id="email" {...register("email")} className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4  mt-2"/> 
         <p className="text-red-600 mb-3">{errors.email?.message}</p>
         <label htmlFor="password" className="text-[#182467]">Password*</label>
-        <input type="password" id="password" {...register("password" , {
-          required :{
-            value : true,
-            message : "password is required"
-          },
-          pattern : {
-            value : /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-            message : "Password not in correct form"
-          }
-        })} className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4 mt-2"/>
+        <input type="password" id="password" {...register("password")} className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4 mt-2"/>
          <p className="text-red-500 mb-3">{errors.password?.message}</p>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center justify-center gap-2">

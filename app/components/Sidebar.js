@@ -17,22 +17,22 @@ const Sidebar = () => {
      </div>
      </div>
      <div className="flex flex-col items-center justify-center">
-       <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 rounded-md text-white bg-[#7B94F6]">
+       <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 rounded-md text-white bg-[#7B94F6] cursor-pointer">
        <Image src="/House.svg" alt="Vercel Logo" className=" w-[1.3vw]" width={200}height={46}priority/>
            <h3 className='ml-1'>Home</h3>
        </div>
-       <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2  text-[#3A4264]">
+       <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
        <Image src="/ListChecks.svg" alt="Vercel Logo" className=" w-[1.3vw]" width={200}height={46}priority/>
            <h3 className='ml-1'>Status</h3>
        </div>
-       <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264]">
+       <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
        <Image src="/User.svg" alt="Vercel Logo" className=" w-[1.3vw]" width={200}height={46}priority/>
            <h3 className='ml-1'>Profile</h3>
        </div>
       
      </div>
      <div className="fixed bottom-12 ">
-     <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2  text-[#3A4264]">
+     <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
        <Image src="/SignOut.svg" alt="Vercel Logo" className=" w-[1.3vw]" width={200}height={46}priority/>
            <h3 className='ml-1'>Logout</h3>
        </div>

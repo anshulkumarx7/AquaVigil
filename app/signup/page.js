@@ -2,11 +2,40 @@
 import Image from "next/image";
 import { useForm } from 'react-hook-form'
 // import {DevTool} from '@hookform/devtools'
-
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 
 export default function Home() {
-  const {register , control , handleSubmit , formState} = useForm();
+  const schema = yup.object({
+    name :  yup
+    .string()
+    .required("Name is required"),
+    age : yup
+    .number()
+    .required('Age is required')
+    .positive('Age must be a positive number')
+    .integer('Age must be an integer'),
+    phNumber: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits'),
+    email: yup
+      .string()
+      .email("Email format is not valid !")
+      .required(""),
+    password : yup
+    .string()
+    .required("Password is required")
+    .min(8,"Password must contain at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/,
+      'Password must contain at least 1 lowercase, 1 uppercase, and 1 special character'
+    ),
+  });
+  const {register , control , handleSubmit , formState} = useForm({
+    resolver : yupResolver(schema)
+  });
   const { errors} = formState
 
   const onSubmit = (data)=>{
@@ -43,32 +72,46 @@ export default function Home() {
             value : true,
             message : "Name is required"
           }
-        })} className="w-[27vw] h-[0.5vh] border-[#3B2C4DE] border-2 p-3 mt-2 focus:border-[#234DF0]"/>
+        })} className="w-[27vw] h-[1vh] border-[#3B2C4DE] border-2 p-4 focus:border-[#234DF0]"/>
          <p className="text-red-500 mb-3">{errors.name?.message}</p>
          <div className="flex justify-center items-center gap-4">
             <div className="">
             <label htmlFor="age" className="text-[#182467]">Age</label>
-            <input type="number" id="age" name="age" className="w-[10vw] h-[0.5vh] border-[#3B2C4DE] border-2 p-3 mt-2 focus:border-[#234DF0]"></input>
+            <input type="number" id="age" {...register("age" , {
+          required :{
+            valueAsNumber : true,
+            value : true,
+            message : "Age is required"
+          },
+        })} className="w-[10vw] h-[1vh] border-[#3B2C4DE] border-2 p-4 mb-2 focus:border-[#234DF0]"></input>
+            <p className="text-red-500 mb-3">{errors.age?.message}</p>
             </div>
             <div className="relative">
             <label htmlFor="phNumber" className="text-[#182467]"> <span> <Image
                                                          src="/indFlag.svg"
                                                          alt="Vercel Logo"
-                                                         className=" w-[1.3vw] absolute bottom-[10%] left-[6%]"
+                                                         className=" w-[1.5vw] absolute top-[39%] left-[6%] z-10"
                                                          width={200}
                                                          height={46}
                                                          priority
                                                             /></span> Phone Number</label>
-            <input type="number" id="phNumber" name="phNumber" className="w-[15vw] h-[0.5vh]  border-[#3B2C4DE] border-2 p-3 mt-2  focus:border-[#234DF0]"></input>
+            <input type="number" id="phNumber"  {...register("phNumber" , {
+          required :{
+            valueAsNumber : true,
+            value : true,
+            message : "Phone No. is required"
+          },
+        })} className="w-[15.8vw] h-[1vh]  border-[#3B2C4DE] border-2 p-4 mb-2  focus:border-[#234DF0] relative"></input>
+              <p className="text-red-500 mb-3">{errors.phNumber?.message}</p>
             </div>
          </div>
-         <label for="location" className="text-[#182467]">Location*</label>
-         <input type="text" id="location" name="location" className="w-[27vw] h-[0.5vh] border-[#3B2C4DE] border-2 p-3 mt-2 mb-2"></input>
+         <label htmlFor="location" className="text-[#182467] ">Location*</label>
+         <input type="text" id="location" name="location" className="w-[27vw] h-[1vh] border-[#3B2C4DE] border-2 p-4 mb-2"></input>
          <label htmlFor="email" className="text-[#182467]">Email*</label>
         <input type="email" id="email" {...register("email" , {pattern : {
           value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
           message : "Invalid email format"
-        }})} className="w-[27vw] h-[0.5vh] border-[#3B2C4DE] border-2 p-3  mt-2"/> 
+        }})} className="w-[27vw] h-[1vh] border-[#3B2C4DE] border-2 p-4"/> 
         <p className="text-red-600 mb-3">{errors.email?.message}</p>
         <label htmlFor="password" className="text-[#182467]">Password*</label>
         <input type="password" id="password" {...register("password" , {
@@ -80,7 +123,7 @@ export default function Home() {
             value : /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
             message : "Password not in correct form"
           }
-        })} className="w-[27vw] h-[0.5vh] border-[#3B2C4DE] border-2 p-3 mt-2"/>
+        })} className="w-[27vw] h-[1vh] border-[#3B2C4DE] border-2 p-4"/>
          <p className="text-red-500 mb-3">{errors.password?.message}</p>
           <div className="flex items-center justify-start gap-2">
         <input type="checkbox" name="check" id="check" />
