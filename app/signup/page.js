@@ -9,7 +9,7 @@ import GoogleMaps from "../components/LocationPicker";
 
 export default function Home() {
   const [locationFieldActive, setLocationFieldActive] = useState(false);
-  const [fetchedLocation, setFetchedLocation] = useState("");
+  const [fetchedLocation, setFetchedLocation] = useState({success: false, data: "", latlng: {lat: 0, lng: 0}});
   const schema = yup.object({
     name: yup.string().required("Name is required"),
     age: yup
@@ -150,11 +150,14 @@ export default function Home() {
                   type="text"
                   id="location"
                   name="location"
-                  value={fetchedLocation}
+                  value={fetchedLocation.success ? fetchedLocation.data : ""}
                   placeholder="Type your location"
                   onClick={() => setLocationFieldActive(true)}
                   className="w-[27vw] h-[1vh] border-[#3B2C4DE] border-2 p-4 mb-2"
                 ></input>
+                <p className="text-red-500 mb-3">
+                      {fetchedLocation.success ? "" : fetchedLocation.data}
+                    </p>
                 <label htmlFor="email" className="text-[#182467]">
                   Email*
                 </label>

@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
+import { set } from "react-hook-form";
 
 const GoogleMaps = ({
   apiKey,
@@ -9,23 +10,37 @@ const GoogleMaps = ({
   setFetchedLocation,
 }) => {
   const [currentCenter, setCurrentCenter] = useState(defaultCenter);
-  const [marker, setMarker] = useState({
-    position: defaultCenter,
-    draggable: true,
-    title: "Hello World!",
-  });
 
   const [myMarker, setMyMarker] = useState(null);
   const [myCityCircle, setMyCityCircle] = useState(null);
   const [lastGeocodeTime, setLastGeocodeTime] = useState(null); // Track last geocode fetch time
 
-  const handleMarkerDragEnd = (newPosition) => {
-    console.log(newPosition.lat);
-    console.log(newPosition.lng);
-    setMarker({ ...marker, position: newPosition });
+  const handleMarkerDragEnd = async (newPosition, myCityCircle) => {
+
+    try {
+      const response = await fetch(
+        `https://geocode.maps.co/reverse?lat=${newPosition.lat()}&lon=${newPosition.lng()}&api_key=${process.env.NEXT_PUBLIC_GEOLOCATION_API_KEY}`
+      );
+
+      if (response.ok) {
+        const geocodeData = await response.json();
+        console.log(geocodeData);
+        setFetchedLocation({success: true, data : geocodeData.display_name, latlng: {lat: newPosition.lat(), lng: newPosition.lng()}});
+      } else {
+        console.error("Geocode fetch failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Geocode fetch error:", error);
+    }
+
+    setCurrentCenter({ lat: newPosition.lat(), lng: newPosition.lng() });
+    myCityCircle.setCenter({ lat: newPosition.lat(), lng: newPosition.lng() });
+    setMyCityCircle(myCityCircle);
+    console.log(newPosition.lat(), newPosition.lng());
   };
 
   const isLoaded = (map, maps) => {
+    const position = new google.maps.LatLng(currentCenter.lat, currentCenter.lng);
     const cityCircle = new google.maps.Circle({
       strokeColor: "#FF0000",
       strokeOpacity: 0.8,
@@ -41,11 +56,14 @@ const GoogleMaps = ({
     setMyCityCircle(cityCircle);
 
     let newMarker = new google.maps.Marker({
-      ...marker,
+      // position: map.getCenter(),
+      position: position,
+      draggable: true,
+      title: "Hello World!",
       map: map,
-      position_changed: () => handleMarkerDragEnd(marker.position),
+      // position_changed: () => handleMarkerDragEnd(newMarker.getPosition()),
     });
-
+    newMarker.addListener("dragend", async () => await handleMarkerDragEnd(newMarker.getPosition(), cityCircle));
     setMyMarker(newMarker);
   };
 
@@ -73,7 +91,7 @@ const GoogleMaps = ({
           if (response.ok) {
             const geocodeData = await response.json();
             console.log(geocodeData);
-            setFetchedLocation(geocodeData.display_name);
+            setFetchedLocation({success: true, data : geocodeData.display_name, latlng: {lat: latitude, lng: longitude}});
           } else {
             console.error("Geocode fetch failed:", response.statusText);
           }
@@ -81,15 +99,11 @@ const GoogleMaps = ({
           console.error("Geocode fetch error:", error);
         }
 
-        // Update location regardless of geocode fetch
-        setMarker({
-          ...marker,
-          position: { lat: latitude, lng: longitude },
-        });
         setCurrentCenter({ lat: latitude, lng: longitude });
 
         myMarker.setPosition({ lat: latitude, lng: longitude });
         myCityCircle.setCenter({ lat: latitude, lng: longitude });
+        console.log("Circle: ", myCityCircle.getCenter());
 
         console.log(latitude, longitude);
       });
