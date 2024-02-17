@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
-import { set } from "react-hook-form";
 
 const GoogleMaps = ({
-  apiKey,
-  defaultCenter = { lat: 40.756795, lng: -73.954298 },
+  defaultCenter = { lat: 40.756795, lng: -73.954298 }, // Default to New York else use user's location
   defaultZoom = 17,
   setFetchedLocation,
+  isAdminPage = false,
+  compplaintsData = [],
 }) => {
   const [currentCenter, setCurrentCenter] = useState(defaultCenter);
 
@@ -16,16 +16,21 @@ const GoogleMaps = ({
   const [lastGeocodeTime, setLastGeocodeTime] = useState(null); // Track last geocode fetch time
 
   const handleMarkerDragEnd = async (newPosition, myCityCircle) => {
-
     try {
       const response = await fetch(
-        `https://geocode.maps.co/reverse?lat=${newPosition.lat()}&lon=${newPosition.lng()}&api_key=${process.env.NEXT_PUBLIC_GEOLOCATION_API_KEY}`
+        `https://geocode.maps.co/reverse?lat=${newPosition.lat()}&lon=${newPosition.lng()}&api_key=${
+          process.env.NEXT_PUBLIC_GEOLOCATION_API_KEY
+        }`
       );
 
       if (response.ok) {
         const geocodeData = await response.json();
         console.log(geocodeData);
-        setFetchedLocation({success: true, data : geocodeData.display_name, latlng: {lat: newPosition.lat(), lng: newPosition.lng()}});
+        setFetchedLocation({
+          success: true,
+          data: geocodeData.display_name,
+          latlng: { lat: newPosition.lat(), lng: newPosition.lng() },
+        });
       } else {
         console.error("Geocode fetch failed:", response.statusText);
       }
@@ -40,31 +45,54 @@ const GoogleMaps = ({
   };
 
   const isLoaded = (map, maps) => {
-    const position = new google.maps.LatLng(currentCenter.lat, currentCenter.lng);
-    const cityCircle = new google.maps.Circle({
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#FF0000",
-      fillOpacity: 0.35,
-      map: map,
-      center: currentCenter,
-      radius: 100,
-      draggable: true,
-    });
+    if (!isAdminPage) {
+      const position = new google.maps.LatLng(
+        currentCenter.lat,
+        currentCenter.lng
+      );
+      const cityCircle = new google.maps.Circle({
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        map: map,
+        center: currentCenter,
+        radius: 100,
+        draggable: true,
+      });
 
-    setMyCityCircle(cityCircle);
+      setMyCityCircle(cityCircle);
 
-    let newMarker = new google.maps.Marker({
-      // position: map.getCenter(),
-      position: position,
-      draggable: true,
-      title: "Hello World!",
-      map: map,
-      // position_changed: () => handleMarkerDragEnd(newMarker.getPosition()),
-    });
-    newMarker.addListener("dragend", async () => await handleMarkerDragEnd(newMarker.getPosition(), cityCircle));
-    setMyMarker(newMarker);
+      let newMarker = new google.maps.Marker({
+        // position: map.getCenter(),
+        position: position,
+        draggable: true,
+        title: "Hello World!",
+        map: map,
+        // position_changed: () => handleMarkerDragEnd(newMarker.getPosition()),
+      });
+      newMarker.addListener(
+        "dragend",
+        async () =>
+          await handleMarkerDragEnd(newMarker.getPosition(), cityCircle)
+      );
+      setMyMarker(newMarker);
+    }
+    else {
+      compplaintsData.forEach((complaint) => {
+        const position = new google.maps.LatLng(
+          complaint.lat,
+          complaint.lng
+        );
+        new google.maps.Marker({
+          position: position,
+          map: map,
+          title: "Hello World!",
+          fillColor: "#FF0000",
+        });
+      });
+    }
   };
 
   const getCurrentLocation = async () => {
@@ -91,7 +119,11 @@ const GoogleMaps = ({
           if (response.ok) {
             const geocodeData = await response.json();
             console.log(geocodeData);
-            setFetchedLocation({success: true, data : geocodeData.display_name, latlng: {lat: latitude, lng: longitude}});
+            setFetchedLocation({
+              success: true,
+              data: geocodeData.display_name,
+              latlng: { lat: latitude, lng: longitude },
+            });
           } else {
             console.error("Geocode fetch failed:", response.statusText);
           }
@@ -113,21 +145,27 @@ const GoogleMaps = ({
   };
 
   return (
-    <div className="w-full h-screen relative">
+    <div
+      className={` ${
+        isAdminPage ? "h-[80vh] w-[79vw] rounded-md" : "h-screen w-full"
+      } relative`}
+    >
       <GoogleMapReact
         bootstrapURLKeys={{ key: `${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}` }} // Replace with your API key
         defaultCenter={defaultCenter}
         defaultZoom={defaultZoom}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => isLoaded(map, maps)}
-        center={currentCenter}
+        center={!isAdminPage ? currentCenter : compplaintsData[0]} // later we have to change this to admin's coordinates or user's
       />
-      <div
-        className="flex justify-center hover:cursor-pointer transition-all duration-200 items-center p-5 bg-blue-500 rounded-lg text-white font-semibold absolute bottom-10 left-[50%] translate-x-[-50%]"
-        onClick={getCurrentLocation}
-      >
-        Get Current Location
-      </div>
+      {!isAdminPage && 
+        <div
+          className="flex justify-center hover:cursor-pointer transition-all duration-200 items-center p-5 bg-blue-500 rounded-lg text-white font-semibold absolute bottom-10 left-[50%] translate-x-[-50%]"
+          onClick={getCurrentLocation}
+        >
+          Get Current Location
+        </div>
+      }
     </div>
   );
 };
