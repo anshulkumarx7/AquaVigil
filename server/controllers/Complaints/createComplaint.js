@@ -25,12 +25,16 @@ exports.createComplaint = async (req, res) => {
       address: address,
       image: image,
       category: category,
+      status: 0,
+      employeeId: null,
     })
 
-    res.status(200).json({
-      success: true,
-      message: "Complaint created successfully",
-    })
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: "Complaint created successfully",
+      })
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
