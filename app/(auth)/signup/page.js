@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useState } from "react";
-import GoogleMaps from "../components/LocationPicker";
+import GoogleMaps from "../../components/LocationPicker";
 
 export default function Home() {
   const [locationFieldActive, setLocationFieldActive] = useState(false);
