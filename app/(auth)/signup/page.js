@@ -1,15 +1,20 @@
-"use client";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
+"use client"
+import Image from "next/image"
+import { useForm } from "react-hook-form"
 // import {DevTool} from '@hookform/devtools'
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useState } from "react";
-import GoogleMaps from "../../components/LocationPicker";
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+import { useState } from "react"
+import GoogleMaps from "../../components/LocationPicker"
+import { registerUser } from "../../services/auth/auth"
 
 export default function Home() {
-  const [locationFieldActive, setLocationFieldActive] = useState(false);
-  const [fetchedLocation, setFetchedLocation] = useState({success: false, data: "", latlng: {lat: 0, lng: 0}});
+  const [locationFieldActive, setLocationFieldActive] = useState(false)
+  const [fetchedLocation, setFetchedLocation] = useState({
+    success: false,
+    data: "",
+    latlng: { lat: 0, lng: 0 },
+  })
   const schema = yup.object({
     name: yup.string().required("Name is required"),
     age: yup
@@ -30,16 +35,37 @@ export default function Home() {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/,
         "Password must contain at least 1 lowercase, 1 uppercase, and 1 special character"
       ),
-  });
+  })
   const { register, control, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema),
-  });
-  const { errors } = formState;
+  })
+  const { errors } = formState
 
-  console.log(locationFieldActive);
+  console.log("Field Active:", locationFieldActive)
 
-  const onSubmit = (data) => {};
+  const onSubmit = async (data) => {
+    console.log(data)
+    try {
+      const newData = {
+        name: data.name,
+        phone: data.phNumber,
+        email: data.email,
+        password: data.password,
+        location: fetchedLocation,
+      }
+      console.log(newData)
+      let result = await registerUser(newData)
 
+      if (!result) throw new Error("Registration failed")
+    } catch (error) {
+      console.log(error)
+      reset()
+      setError("afterSubmit", {
+        ...error,
+        message: error.message,
+      })
+    }
+  }
   return (
     <>
       <div className=" w-full flex items-center justify-center gap-7 mt-1 overflow-y-hidden ">
@@ -156,8 +182,8 @@ export default function Home() {
                   className="w-[27vw] h-[1vh] border-[#3B2C4DE] border-2 p-4 mb-2"
                 ></input>
                 <p className="text-red-500 mb-3">
-                      {fetchedLocation.success ? "" : fetchedLocation.data}
-                    </p>
+                  {fetchedLocation.success ? "" : fetchedLocation.data}
+                </p>
                 <label htmlFor="email" className="text-[#182467]">
                   Email*
                 </label>
@@ -225,7 +251,7 @@ export default function Home() {
         </div>
         <div className="w-1/2 h-screen bg-[#F5F7FD]">
           {locationFieldActive ? (
-            <GoogleMaps setFetchedLocation={setFetchedLocation}/>
+            <GoogleMaps setFetchedLocation={setFetchedLocation} />
           ) : (
             <Image
               src="/signup.svg"
@@ -239,5 +265,5 @@ export default function Home() {
         </div>
       </div>
     </>
-  );
+  )
 }

@@ -1,5 +1,6 @@
 const database = "Complaints"
 const { getClient } = require("../../config/database")
+const { ObjectId } = require("mongodb")
 exports.modifyComplaint = async (req, res) => {
   try {
     const { complaintId, status, employeeId } = req.body
@@ -14,7 +15,7 @@ exports.modifyComplaint = async (req, res) => {
     const result = await complaints.updateOne(
       { _id: ObjectId(complaintId) },
       { $set: { status: status } },
-      { $set: { employeeId: employeeId } }
+      { $set: { employeeId: ObjectId(employeeId) } }
     )
     res.status(200).json({
       success: true,
