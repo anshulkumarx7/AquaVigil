@@ -1,11 +1,20 @@
-"use client";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import Sidebar from "../components/Sidebar";
+"use client"
+import Image from "next/image"
+import { useForm } from "react-hook-form"
+import Sidebar from "../components/Sidebar"
 const page = () => {
-  const { register, control, handleSubmit, formState } = useForm();
-  const { errors } = formState;
-  const onSubmit = (data) => {};
+  const { register, control, handleSubmit, formState } = useForm()
+  const { errors } = formState
+  const onSubmit = (data) => {
+      console.log(data)
+      const newData = {
+          name: data.name,
+          address: data.address,
+          state: data.state,
+          phone: data.phNumber,
+          description: data.description,  
+      }
+  }
   return (
     <>
       <div className="flex items-center justify-center gap-3 overflow-y-hidden">
@@ -113,18 +122,33 @@ const page = () => {
                 <input
                   type="number"
                   id="phNumber"
+                  {...register("phNumber", {
+                    required: {
+                      value: true,
+                      message: "Phone number is required",
+                    },
+                  })}
                   name="phNumber"
                   className="w-[27vw] px-12 h-[4vh] mb-2  border-[#3B2C4DE] border-2 p-4 focus:border-[#234DF0]"
-                ></input>
+                />
               </div>
-              <label htmlFor="state" className="text-[#3A4264]">
-                Description*
-              </label>
-              <textarea
-                rows="4"
-                cols="41.5"
-                className=" border-[#3B2C4DE] border-2 p-4   focus:border-[#234DF0]"
-              ></textarea>
+              <div className="flex flex-col">
+                <label htmlFor="description" className="text-[#3A4264]">
+                  Description*
+                </label>
+                <textarea
+                  id="description"
+                  cols={30}
+                  rows={4}
+                  {...register("description", {
+                    required: {
+                      value: true,
+                      message: "Description is required",
+                    },
+                  })}
+                  className="border-[#3B2C4DE] border-2 p-4 focus:border-[#234DF0]"
+                />
+              </div>
               <button
                 className="w-[27vw] h-[6vh] bg-[#234DF0] p-5 mt-2 text-white flex items-center justify-center rounded-lg"
                 type="submit"
@@ -149,7 +173,7 @@ const page = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default page;
+export default page

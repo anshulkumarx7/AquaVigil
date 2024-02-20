@@ -2,6 +2,7 @@
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 // import {DevTool} from '@hookform/devtools'
+import { loginUser } from "./services/auth/auth"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 
@@ -22,7 +23,22 @@ export default function Home() {
   })
   const { errors } = formState
 
-  const onSubmit = (data) => {}
+  const onSubmit = async (data) => {
+    try {
+      console.log(data)
+      let result = await loginUser(data)
+      console.log(result)
+
+      if (!result) throw new Error("Login failed")
+    } catch (error) {
+      console.log(error)
+      reset()
+      setError("afterSubmit", {
+        ...error,
+        message: error.message,
+      })
+    }
+  }
 
   return (
     <>

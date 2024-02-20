@@ -3,8 +3,9 @@ const app = express()
 const dotenv = require("dotenv")
 const { connect, close } = require("./config/database")
 
-const operationRoutes = require("./routes/operationRoutes")
+const userRoutes = require("./routes/userRoutes")
 const authRoutes = require("./routes/authRoute")
+const adminRoutes = require("./routes/adminRoutes")
 
 const cors = require("cors")
 
@@ -30,7 +31,8 @@ app.get("/", (req, res) => {
 })
 
 // routes
-app.use("/api/v1/operations", operationRoutes)
+app.use("/api/v1/user", userRoutes)
+app.use("/api/v1/admin", adminRoutes)
 app.use("/api/v1/auth", authRoutes)
 
 app.listen(PORT, () => {
