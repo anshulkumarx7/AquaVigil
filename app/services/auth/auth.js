@@ -1,3 +1,4 @@
+"use client";
 import { toast } from "react-hot-toast"
 
 import { authEndpoints } from "../api"
@@ -19,7 +20,9 @@ export const loginUser = async (data) => {
     return {
       result: response.data.message,
       success: true,
+      user: response.data.user,
       token: response.data.token,
+      type: response.data.type,
     }
   } catch (error) {
     toast.dismiss(toastId)

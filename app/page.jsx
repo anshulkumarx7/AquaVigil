@@ -1,8 +1,11 @@
+"use client";
 import React from "react";
 import Navbar from "./components/Navbar";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const MainPage = () => {
+  const router = useRouter();
   return (
     <div className="w-[100vw] h-full pt-10">
       <div className="max-w-[1080px] w-10/12 h-fit mx-auto">
@@ -18,10 +21,10 @@ const MainPage = () => {
               safer community. Share your concerns now.
             </p>
             <div className="flex gap-x-[12px] w-[370px] h-[50px] justify-between items-center">
-              <button className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
+              <button onClick={() => router.push("/signup")} className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
                 Sign Up
               </button>
-              <button className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
+              <button onClick={() => router.push("/signin")} className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
                 Sign In
               </button>
             </div>

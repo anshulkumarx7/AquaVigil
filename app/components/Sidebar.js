@@ -1,6 +1,23 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { LogoutUser } from "@/redux/slices/Auth";
+import { useRouter, usePathname } from "next/navigation";
 const Sidebar = () => {
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
+  console.log("Pathname: ", pathname);
+  const handleLogout = () => {
+    dispatch(LogoutUser());
+    router.replace("/signin");
+  };
+
+  let Home = true;
+  if (pathname === "/user/complaintform") Home = false;
+
   return (
     <div className="sidebar relative w-[18vw] ml-3 flex flex-col items-center justify-center gap-1 h-screen">
       <div className="">
@@ -17,7 +34,11 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center">
-        <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 rounded-md text-white bg-[#7B94F6] cursor-pointer">
+        <div
+          className={`w-[14vw] h-[5vh] flex items-center justify-start p-4 rounded-md ${
+            Home ? "text-white bg-[#7B94F6]" : "hover:bg-gray-300"
+          } cursor-pointer`} onClick={() => router.push(`/user/${user.token}`)}
+        >
           <Image
             src="/House.svg"
             alt="Vercel Logo"
@@ -28,7 +49,11 @@ const Sidebar = () => {
           />
           <h3 className="ml-1">Home</h3>
         </div>
-        <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
+        <div
+          className={`w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] ${
+            pathname === "/user/complaintform" && "text-white bg-[#7B94F6]"
+          } cursor-pointer hover:bg-gray-300`} onClick={() => router.push("/user/complaintform")}
+        >
           <Image
             src="/Complaint.png"
             alt="Vercel Logo"
@@ -39,7 +64,13 @@ const Sidebar = () => {
           />
           <h3 className="ml-1">Complaint</h3>
         </div>
-        <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
+        <div
+          className={`w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md ${
+            pathname !== "/user/complaintform" &&
+            !Home &&
+            "text-white bg-[#7B94F6]"
+          } text-[#3A4264] cursor-pointer hover:bg-gray-300`}
+        >
           <Image
             src="/ListChecks.svg"
             alt="Vercel Logo"
@@ -50,7 +81,11 @@ const Sidebar = () => {
           />
           <h3 className="ml-1">Status</h3>
         </div>
-        <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
+        <div
+          className={`w-[14vw] h-[5vh] flex ${
+            pathname === "/user/profile" && "text-white bg-[#7B94F6]"
+          } items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300`}
+        >
           <Image
             src="/User.svg"
             alt="Vercel Logo"
@@ -63,7 +98,10 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="fixed bottom-12 ">
-        <div className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300">
+        <div
+          onClick={handleLogout}
+          className="w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300"
+        >
           <Image
             src="/SignOut.svg"
             alt="Vercel Logo"

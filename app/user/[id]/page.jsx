@@ -1,13 +1,19 @@
 "use client";
 import Sidebar from "@/app/components/Sidebar";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
-  AlignRight,
-  ArrowFatRight,
   CaretLeft,
   CaretRight,
 } from "phosphor-react";
+import { useSelector } from "react-redux";
 const UserPage = () => {
+  const router = useRouter()
+  const user = useSelector((state) => state.auth.user);
+  console.log("User: ", user);
+  const handleComplaintButtonClick = () => {
+    router.push("/user/complaintform");
+  }
   return (
     <>
       <div className="flex items-center justify-center gap-3 overflow-y-hidden">
@@ -28,9 +34,9 @@ const UserPage = () => {
                 assist you in resolving them promptly and efficiently.
               </p>
               <div className="flex gap-x-[12px] w-[370px] h-[50px] justify-between items-center mt-8">
-                <button className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
-                  File a Complaint
-                </button>
+                  <button onClick={ handleComplaintButtonClick } className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
+                    File a Complaint
+                  </button>
                 <button className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
                   Check Status
                 </button>
@@ -87,7 +93,7 @@ const UserPage = () => {
         <div className=" w-[46vw] h-screen">
           <div className="flex flex-col items-center justify-center h-[100%]">
             <p className="text-[#3A4264] mb-3 font-extrabold text-xl">
-              Welcome <span className="text-[#234DF0]">Adarsh Kr.</span>
+              Welcome <span className="text-[#234DF0]">{user.name}</span>.
             </p>
             <Image
               src="/UserPageImage.svg"

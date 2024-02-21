@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../../components/Sidebar"
 const page = () => {
   const { register, control, handleSubmit, formState } = useForm()
   const { errors } = formState

@@ -1,4 +1,3 @@
-const { async } = require("emoji-mart")
 const { getClient } = require("../../config/database")
 const database = "Complaints"
 const userDatabase = "User"

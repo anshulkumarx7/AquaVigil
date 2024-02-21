@@ -2,11 +2,16 @@
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 // import {DevTool} from '@hookform/devtools'
-import { loginUser } from "./services/auth/auth"
+// import { loginUser } from "./services/auth/auth"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { useDispatch } from "react-redux"
+import { UserLogin } from "@/redux/slices/Auth"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
+  const dispatch = useDispatch()
+  const router = useRouter()
   const schema = yup.object({
     email: yup.string().email("Email format is not valid !").required(""),
     password: yup
@@ -18,7 +23,7 @@ export default function Home() {
         "Password must contain at least 1 lowercase, 1 uppercase, and 1 special character"
       ),
   })
-  const { register, control, handleSubmit, formState } = useForm({
+  const { register, control, handleSubmit, formState, reset, setError } = useForm({
     resolver: yupResolver(schema),
   })
   const { errors } = formState
@@ -26,8 +31,13 @@ export default function Home() {
   const onSubmit = async (data) => {
     try {
       console.log(data)
-      let result = await loginUser(data)
-      console.log(result)
+      // let result = await loginUser(data)
+      let result = await dispatch(UserLogin(data));
+      console.log("Result: ", result)
+
+      if (result.success) {
+        router.replace(`/user/${result.token}`)
+      }
 
       if (!result) throw new Error("Login failed")
     } catch (error) {

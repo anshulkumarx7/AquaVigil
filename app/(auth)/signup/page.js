@@ -238,7 +238,7 @@ export default function Home() {
                 </button>
                 <p className="text-[#182467] mt-5">
                   Have an Account?{" "}
-                  <a href="/">
+                  <a href="/signin">
                     <span className="text-[#234DF0] font-semibold cursor-pointer hover:underline">
                       Sign In
                     </span>
