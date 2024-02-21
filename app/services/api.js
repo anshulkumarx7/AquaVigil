@@ -1,5 +1,4 @@
-const BASE_USER_URL = ""
-const BASE_ADMIN_URL = ""
+const BASE_URL = "http://localhost:4000/api/v1/user"
 const AUTH_URL = "http://localhost:4000/api/v1/auth"
 
 export const authEndpoints = {
@@ -16,4 +15,7 @@ export const operationUserEndpoints = {
 export const operationAdminEndpoints = {
   GET_ALL_EMPLOYEES_API: BASE_ADMIN_URL + "/getAllEmployees",
   GET_ALL_COMPLAINTS_API: BASE_ADMIN_URL + "/getAllComplaints",
+  
+export const userEndpoints = {
+  IMAGE_UPLOAD_API: BASE_URL + "/imageUpload",
 }

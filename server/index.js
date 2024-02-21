@@ -23,6 +23,15 @@ app.use(
   })
 )
 
+const fileUpload = require("express-fileupload")
+app.use(fileUpload({
+    useTempFiles:true,
+    tempFileDir: '/tmp'
+}))
+
+const cloudinary = require("./config/cloudinary")
+cloudinary.cloudinaryConnect()
+
 app.get("/", (req, res) => {
   return res.json({
     success: true,
