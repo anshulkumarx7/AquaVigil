@@ -1,17 +1,9 @@
 const express = require("express")
 const router = express.Router()
 
-// const { createComplaint } = require("../controllers/Complaints/createComplaint")
-// const {
-//   getAllComplaintsById,
-//   getAllComplaintsByLocation,
-// } = require("../controllers/Complaints/getAllComplaint")
-// const { protect } = require("../controllers/Auth/auth")
+const { protect } = require("../controllers/Auth/auth")
+const { getAllEmployees } = require("../controllers/Admin/getAllEmployees")
 
-// router.post("/createComplaint", protect, createComplaint)
-// router.get("/getAllComplaintsById", protect, getAllComplaintsById)
-// router.get("/getAllComplaintsByLocation", protect, getAllComplaintsByLocation)
-
-//Add admin routes here
+router.get("/getAllEmployees", protect, getAllEmployees)
 
 module.exports = router

@@ -1,33 +1,36 @@
-"use client";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import Sidebar from "../../components/Sidebar";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import GoogleMaps from "@/app/components/LocationPicker";
+"use client"
+import Image from "next/image"
+import { useForm } from "react-hook-form"
+import Sidebar from "../../components/Sidebar"
+import { useSelector } from "react-redux"
+import { useState } from "react"
+import GoogleMaps from "@/app/components/LocationPicker"
+import { createComplaint } from "@/app/services/operationUser/createComplaint"
+
 const ComplaintForm = () => {
-  const [locationFieldActive, setLocationFieldActive] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
+  const [locationFieldActive, setLocationFieldActive] = useState(false)
+  const [imageFile, setImageFile] = useState(null)
   const [fetchedLocation, setFetchedLocation] = useState({
     success: false,
     data: "",
     address: { state: "", city: "" },
     latlng: { lat: 0, lng: 0 },
-  });
-  const user = useSelector((state) => state.auth.user);
-  const { register, control, handleSubmit, formState } = useForm();
-  const { errors } = formState;
+  })
+  const user = useSelector((state) => state.auth.user)
+  const token = useSelector((state) => state.auth.token)
+  const { register, control, handleSubmit, formState } = useForm()
+  const { errors } = formState
 
   const handleFileChange = (e) => {
     // Handle the uploaded file
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     // You can now use this file object as needed, e.g., upload it, display preview, etc.
-    console.log("Uploaded file:", file);
-    setImageFile(file);
-  };
+    console.log("Uploaded file:", file)
+    setImageFile(file)
+  }
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    console.log(data)
     const newData = {
       name: data.name,
       address: fetchedLocation.data,
@@ -35,10 +38,12 @@ const ComplaintForm = () => {
       phone: data.phNumber,
       description: data.description,
       location: fetchedLocation.latlng,
-    };
+    }
 
-    console.log(newData);
-  };
+    const result = await createComplaint(token, newData)
+    if (!result) return console.log("Complaint not created")
+    console.log(newData)
+  }
   return (
     <>
       <div className="flex items-center justify-center gap-3 overflow-y-hidden">
@@ -197,7 +202,7 @@ const ComplaintForm = () => {
               <>
                 <label htmlFor="file-upload">
                   <Image
-                    src={imageFile ? "/"+ imageFile.name :"/upload_img.svg"}
+                    src={imageFile ? "/" + imageFile.name : "/upload_img.svg"}
                     alt="Google Logo"
                     className="w-[33vw] h-[52vh]"
                     width={5}
@@ -206,14 +211,20 @@ const ComplaintForm = () => {
                   ></Image>
                 </label>
 
-                <input type="file" id="file-upload" accept="image/*" hidden onChange={handleFileChange}/>
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
               </>
             )}
           </div>
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ComplaintForm;
+export default ComplaintForm
