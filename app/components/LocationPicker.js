@@ -29,6 +29,7 @@ const GoogleMaps = ({
         setFetchedLocation({
           success: true,
           data: geocodeData.display_name,
+          address: { state: geocodeData.address.state , city: geocodeData.address.city },
           latlng: { lat: newPosition.lat(), lng: newPosition.lng() },
         })
       } else {
@@ -119,6 +120,7 @@ const GoogleMaps = ({
             setFetchedLocation({
               success: true,
               data: geocodeData.display_name,
+              address: { state: geocodeData.address.state , city: geocodeData.address.city },
               latlng: { lat: latitude, lng: longitude },
             })
           } else {

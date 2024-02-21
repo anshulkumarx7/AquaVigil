@@ -6,17 +6,27 @@ import { LogoutUser } from "@/redux/slices/Auth";
 import { useRouter, usePathname } from "next/navigation";
 const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
+
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+
+  const path = pathname.split("/");
+  console.log("Path: ", path.at(-1));
+
   console.log("Pathname: ", pathname);
   const handleLogout = () => {
-    dispatch(LogoutUser());
     router.replace("/signin");
+    dispatch(LogoutUser());
   };
 
   let Home = true;
-  if (pathname === "/user/complaintform") Home = false;
+  if (
+    pathname === "/user/complaintform" ||
+    path.at(-1) === "status" ||
+    path.at(-1) === "profile"
+  )
+    Home = false;
 
   return (
     <div className="sidebar relative w-[18vw] ml-3 flex flex-col items-center justify-center gap-1 h-screen">
@@ -37,7 +47,8 @@ const Sidebar = () => {
         <div
           className={`w-[14vw] h-[5vh] flex items-center justify-start p-4 rounded-md ${
             Home ? "text-white bg-[#7B94F6]" : "hover:bg-gray-300"
-          } cursor-pointer`} onClick={() => router.push(`/user/${user.token}`)}
+          } cursor-pointer`}
+          onClick={() => router.push(`/user/${user.token}`)}
         >
           <Image
             src="/House.svg"
@@ -52,7 +63,8 @@ const Sidebar = () => {
         <div
           className={`w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] ${
             pathname === "/user/complaintform" && "text-white bg-[#7B94F6]"
-          } cursor-pointer hover:bg-gray-300`} onClick={() => router.push("/user/complaintform")}
+          } cursor-pointer hover:bg-gray-300`}
+          onClick={() => router.push("/user/complaintform")}
         >
           <Image
             src="/Complaint.png"
@@ -65,10 +77,9 @@ const Sidebar = () => {
           <h3 className="ml-1">Complaint</h3>
         </div>
         <div
+          onClick={() => router.push(`/user/${user.token}/status`)}
           className={`w-[14vw] h-[5vh] flex items-center justify-start p-4 mt-2 rounded-md ${
-            pathname !== "/user/complaintform" &&
-            !Home &&
-            "text-white bg-[#7B94F6]"
+            path.at(-1) === "status" && "text-white bg-[#7B94F6]"
           } text-[#3A4264] cursor-pointer hover:bg-gray-300`}
         >
           <Image

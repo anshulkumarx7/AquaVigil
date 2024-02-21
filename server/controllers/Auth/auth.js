@@ -112,6 +112,7 @@ exports.login = async (req, res) => {
   }
 
   const token = signToken(user._id)
+  user.token = token
   return res.status(200).json({
     success: true,
     message: "User logged in successfully",

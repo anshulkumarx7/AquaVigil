@@ -1,20 +1,44 @@
-"use client"
-import Image from "next/image"
-import { useForm } from "react-hook-form"
-import Sidebar from "../../components/Sidebar"
-const page = () => {
-  const { register, control, handleSubmit, formState } = useForm()
-  const { errors } = formState
+"use client";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import Sidebar from "../../components/Sidebar";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import GoogleMaps from "@/app/components/LocationPicker";
+const ComplaintForm = () => {
+  const [locationFieldActive, setLocationFieldActive] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [fetchedLocation, setFetchedLocation] = useState({
+    success: false,
+    data: "",
+    address: { state: "", city: "" },
+    latlng: { lat: 0, lng: 0 },
+  });
+  const user = useSelector((state) => state.auth.user);
+  const { register, control, handleSubmit, formState } = useForm();
+  const { errors } = formState;
+
+  const handleFileChange = (e) => {
+    // Handle the uploaded file
+    const file = e.target.files[0];
+    // You can now use this file object as needed, e.g., upload it, display preview, etc.
+    console.log("Uploaded file:", file);
+    setImageFile(file);
+  };
+
   const onSubmit = (data) => {
-      console.log(data)
-      const newData = {
-          name: data.name,
-          address: data.address,
-          state: data.state,
-          phone: data.phNumber,
-          description: data.description,  
-      }
-  }
+    console.log(data);
+    const newData = {
+      name: data.name,
+      address: fetchedLocation.data,
+      state: fetchedLocation.address.state,
+      phone: data.phNumber,
+      description: data.description,
+      location: fetchedLocation.latlng,
+    };
+
+    console.log(newData);
+  };
   return (
     <>
       <div className="flex items-center justify-center gap-3 overflow-y-hidden">
@@ -57,6 +81,7 @@ const page = () => {
               onSubmit={handleSubmit(onSubmit)}
               className="w-[28vw] h-[43vh]"
               noValidate
+              autoComplete="off"
             >
               <label htmlFor="name" className="text-[#3A4264] mt-1">
                 Name*
@@ -64,6 +89,8 @@ const page = () => {
               <input
                 type="text"
                 id="name"
+                onClick={() => setLocationFieldActive(false)}
+                value={user?.name}
                 {...register("name", {
                   required: {
                     value: true,
@@ -79,30 +106,30 @@ const page = () => {
               <input
                 type="text"
                 id="address"
-                {...register("address", {
-                  required: {
-                    value: true,
-                    message: "Address is required",
-                  },
-                })}
+                onClick={() => setLocationFieldActive(true)}
+                value={fetchedLocation.success ? fetchedLocation.data : ""}
+                {...register("address")}
                 className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4 "
               />
-              <p className="text-red-500 mb-3">{errors.address?.message}</p>
+              <p className="text-red-500 mb-3">
+                {fetchedLocation.success ? "" : fetchedLocation.data}
+              </p>
               <label htmlFor="state" className="text-[#3A4264]">
                 State*
               </label>
               <input
                 type="text"
                 id="state"
-                {...register("state", {
-                  required: {
-                    value: true,
-                    message: "State is required",
-                  },
-                })}
+                onClick={() => setLocationFieldActive(false)}
+                value={
+                  fetchedLocation.success ? fetchedLocation.address.state : ""
+                }
+                {...register("state")}
                 className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4 "
               />
-              <p className="text-red-500 mb-3">{errors.state?.message}</p>
+              <p className="text-red-500 mb-3">
+                {fetchedLocation.success ? "" : fetchedLocation.data}
+              </p>
               <div className="relative">
                 <label htmlFor="phNumber" className="text-[#3A4264]">
                   {" "}
@@ -122,6 +149,7 @@ const page = () => {
                 <input
                   type="number"
                   id="phNumber"
+                  onClick={() => setLocationFieldActive(false)}
                   {...register("phNumber", {
                     required: {
                       value: true,
@@ -138,8 +166,9 @@ const page = () => {
                 </label>
                 <textarea
                   id="description"
-                  cols={30}
+                  cols={25}
                   rows={4}
+                  onClick={() => setLocationFieldActive(false)}
                   {...register("description", {
                     required: {
                       value: true,
@@ -161,19 +190,30 @@ const page = () => {
         <div className=" w-[46vw] h-screen">
           <div className="flex flex-col items-center justify-center h-[100%]">
             <p className="text-[#3A4264] mb-3 text-xl">Upload Image*</p>
-            <Image
-              src="/upload_img.svg"
-              alt="Google Logo"
-              className="w-[33vw] h-[52vh]"
-              width={5}
-              height={10}
-              priority
-            />
+
+            {locationFieldActive ? (
+              <GoogleMaps setFetchedLocation={setFetchedLocation} />
+            ) : (
+              <>
+                <label htmlFor="file-upload">
+                  <Image
+                    src={imageFile ? "/"+ imageFile.name :"/upload_img.svg"}
+                    alt="Google Logo"
+                    className="w-[33vw] h-[52vh]"
+                    width={5}
+                    height={10}
+                    priority
+                  ></Image>
+                </label>
+
+                <input type="file" id="file-upload" accept="image/*" hidden onChange={handleFileChange}/>
+              </>
+            )}
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default page
+export default ComplaintForm;

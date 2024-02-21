@@ -11,8 +11,8 @@ const UserPage = () => {
   const router = useRouter()
   const user = useSelector((state) => state.auth.user);
   console.log("User: ", user);
-  const handleComplaintButtonClick = () => {
-    router.push("/user/complaintform");
+  const handleButtonClick = (path) => {
+    router.push(path);
   }
   return (
     <>
@@ -34,10 +34,10 @@ const UserPage = () => {
                 assist you in resolving them promptly and efficiently.
               </p>
               <div className="flex gap-x-[12px] w-[370px] h-[50px] justify-between items-center mt-8">
-                  <button onClick={ handleComplaintButtonClick } className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
+                  <button onClick={ () => handleButtonClick("/user/complaintform") } className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
                     File a Complaint
                   </button>
-                <button className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
+                <button onClick={ () => handleButtonClick(`/user/${user.token}/status`) } className="w-[179px] hover:bg-white hover:border-[1px] hover:border-[#234DF0] hover:text-[#234DF0] transition-all duration-200 hover:scale-105 hover:shadow-md hover:shadow-slate-600 h-[50px] flex justify-center items-center bg-[#234DF0] rounded-md text-white font-semibold">
                   Check Status
                 </button>
               </div>

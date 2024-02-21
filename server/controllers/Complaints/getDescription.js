@@ -8,7 +8,7 @@ exports.getDescription = async (req, res) => {
       })
     }
 
-    const prompt = ""
+    const prompt = "Given description: " + description + " Please provide a short summary of the description like what to do in this situation."
 
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
