@@ -1,10 +1,11 @@
-"use client";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import Sidebar from "../../components/Sidebar";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import GoogleMaps from "@/app/components/LocationPicker";
+"use client"
+import Image from "next/image"
+import { useForm } from "react-hook-form"
+import Sidebar from "../../components/Sidebar"
+import { useSelector } from "react-redux"
+import { useState } from "react"
+import GoogleMaps from "@/app/components/LocationPicker"
+import { createComplaint } from "@/app/services/operationUser/createComplaint"
 import { uploadImage } from "@/app/services/users/imageUpload";
 const ComplaintForm = () => {
   const [locationFieldActive, setLocationFieldActive] = useState(false);
@@ -15,10 +16,11 @@ const ComplaintForm = () => {
     data: "",
     address: { state: "", city: "" },
     latlng: { lat: 0, lng: 0 },
-  });
-  const user = useSelector((state) => state.auth.user);
-  const { register, control, handleSubmit, formState } = useForm();
-  const { errors } = formState;
+  })
+  const user = useSelector((state) => state.auth.user)
+  const token = useSelector((state) => state.auth.token)
+  const { register, control, handleSubmit, formState } = useForm()
+  const { errors } = formState
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -36,8 +38,9 @@ const ComplaintForm = () => {
       console.log("Image not uploaded");
       return;
     }
-    
+
     console.log(data);
+
     const newData = {
       name: data.name,
       address: fetchedLocation.data,
@@ -48,8 +51,10 @@ const ComplaintForm = () => {
       imageUrl: imageURL,
     };
 
-    console.log(newData);
-  };
+    const result = await createComplaint(token, newData)
+    if (!result) return console.log("Complaint not created")
+    console.log(newData)
+  }
   return (
     <>
       <div className="flex items-center justify-center gap-3 overflow-y-hidden">
@@ -217,14 +222,20 @@ const ComplaintForm = () => {
                   ></Image>
                 </label>
 
-                <input type="file" id="file-upload" accept="image/*" hidden onChange={handleFileChange}/>
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
               </>
             )}
           </div>
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ComplaintForm;
+export default ComplaintForm
