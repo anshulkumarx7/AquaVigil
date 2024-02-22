@@ -12,9 +12,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   const path = pathname.split("/");
-  console.log("Path: ", path.at(-1));
 
-  console.log("Pathname: ", pathname);
   const handleLogout = () => {
     router.replace("/signin");
     dispatch(LogoutUser());

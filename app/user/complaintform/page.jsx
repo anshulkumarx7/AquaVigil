@@ -1,46 +1,46 @@
-"use client"
-import Image from "next/image"
-import { useForm } from "react-hook-form"
-import Sidebar from "../../components/Sidebar"
-import { useSelector } from "react-redux"
-import { useState } from "react"
-import GoogleMaps from "@/app/components/LocationPicker"
-import { createComplaint } from "@/app/services/operationUser/createComplaint"
+"use client";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import Sidebar from "../../components/Sidebar";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import GoogleMaps from "@/app/components/LocationPicker";
 import { uploadImage } from "@/app/services/users/imageUpload";
+import { createComplaint } from "@/app/services/operationUser/createComplaint"
+
 const ComplaintForm = () => {
   const [locationFieldActive, setLocationFieldActive] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [imageURL, setImageURL] = useState("");
+  const [imageURL, setImageURL] = useState(null);
   const [fetchedLocation, setFetchedLocation] = useState({
     success: false,
     data: "",
     address: { state: "", city: "" },
     latlng: { lat: 0, lng: 0 },
-  })
-  const user = useSelector((state) => state.auth.user)
-  const token = useSelector((state) => state.auth.token)
-  const { register, control, handleSubmit, formState } = useForm()
-  const { errors } = formState
+  });
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  console.log("Token: ", token);
+  
+  const { register, handleSubmit, formState } = useForm();
+  const { errors } = formState;
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     console.log("Uploaded file:", file);
     const imageResult = await uploadImage(file);
-    console.log(imageResult);
+    console.log("Image Result: ", imageResult);
     setImageURL(imageResult.imageUrl)
-    console.log(imageResult.imageUrl);
-    setImageFile(file);
+    console.log("Image Url: ", imageResult.imageUrl);
   };
 
   const onSubmit = async (data) => {
 
     if (!imageURL) {
-      console.log("Image not uploaded");
+      alert("No image url set");
       return;
     }
-
+    
     console.log(data);
-
     const newData = {
       name: data.name,
       address: fetchedLocation.data,
@@ -49,12 +49,16 @@ const ComplaintForm = () => {
       description: data.description,
       location: fetchedLocation.latlng,
       imageUrl: imageURL,
+      userId: user._id,
+      category: "blockage",
     };
 
+    console.log(newData);
     const result = await createComplaint(token, newData)
     if (!result) return console.log("Complaint not created")
-    console.log(newData)
-  }
+    console.log("New Complaint res: ", result)
+
+  };
   return (
     <>
       <div className="flex items-center justify-center gap-3 overflow-y-hidden">
@@ -213,29 +217,25 @@ const ComplaintForm = () => {
               <>
                 <label htmlFor="file-upload">
                   <Image
+                    unoptimized
                     src={ imageURL ? imageURL :"/upload_img.svg"}
                     alt="Google Logo"
                     className="w-[33vw] h-[52vh]"
                     width={5}
                     height={10}
                     priority
+                    objectFit="cover"
                   ></Image>
                 </label>
 
-                <input
-                  type="file"
-                  id="file-upload"
-                  accept="image/*"
-                  hidden
-                  onChange={handleFileChange}
-                />
+                <input type="file" id="file-upload" accept="image/*" hidden onChange={handleFileChange}/>
               </>
             )}
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ComplaintForm
+export default ComplaintForm;

@@ -2,15 +2,26 @@
 import ListView from "@/app/components/ListView"
 import Sidebar from "@/app/components/Sidebar"
 import TopBar from "@/app/components/TopBar"
+import { getAllComplaintsById } from "@/app/services/operationUser/getAllComplaintAPI"
 import React, { useState, useEffect } from "react"
+import { useSelector } from "react-redux"
 
 const UserComplaintStatusPage = () => {
   const [complaintList, setComplaintList] = useState([])
+  const user = useSelector((state) => state.auth.user)
+
+  async function fetchComplaints() {
+    const response = await getAllComplaintsById(user?.token);
+    console.log("Complaints Response: ", response);
+    if (response?.success) {
+      const data = response?.result;
+      setComplaintList(data);
+      console.log("Complaints: ", complaintList);
+    }
+  }
+
   useEffect(() => {
-    getAllComplaints(token).then((response) => {
-      console.log(response)
-      setComplaintList(response.result)
-    })
+    fetchComplaints();
   }, [])
   return (
     <div className="flex items-center justify-center gap-3 overflow-y-hidden bg-[#F5F7FD]">

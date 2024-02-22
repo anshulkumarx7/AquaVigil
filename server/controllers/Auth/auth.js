@@ -124,10 +124,12 @@ exports.login = async (req, res) => {
 
 exports.protect = async (req, res, next) => {
   const { authorization } = req.headers
-  const token = null
+  let token = null
   if (authorization && authorization.startsWith("Bearer"))
     token = authorization.split(" ")[1]
   else token = req.cookies.jwt
+
+  console.log("Token inside server: ", token);
 
   if (!token) {
     return res.status(401).json({
@@ -138,10 +140,13 @@ exports.protect = async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
+  console.log("decoded: ", decoded)
+
   const client = getClient()
   const User = client.db().collection(UserDb)
 
-  const user = await User.findOne({ _id: ObjectId(decoded.userId) })
+  const user = await User.findOne({ _id: new ObjectId(decoded.userId) })
+  console.log("User inside protect: ", user);
 
   if (!user) {
     return res.status(401).json({

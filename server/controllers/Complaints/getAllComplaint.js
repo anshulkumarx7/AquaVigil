@@ -25,9 +25,45 @@ exports.getAllComplaintsByLocation = async (req, res) => {
 
 exports.getAllComplaintsById = async (req, res) => {
   try {
+    const client = getClient();
+    const complaints = client.db().collection(database);
+    const users = client.db().collection(userDatabase);
+    
+    const result = await complaints.aggregate([
+      {
+        $match: { userId: req.userId }
+      },
+      {
+        $lookup: {
+          from: userDatabase,
+          localField: "userId",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      {
+        $unwind: "$user"
+      }
+    ]).toArray();
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+exports.getAllComplaints = async (req, res) => {
+  try {
     const client = getClient()
     const complaints = client.db().collection(database)
-    const result = await complaints.find({ userId: req.userId }).toArray()
+    const result = await complaints.find({}).toArray();
 
     res.status(200).json({
       success: true,
