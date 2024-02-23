@@ -1,6 +1,7 @@
 const BASE_USER_URL = "http://localhost:4000/api/v1/user"
 const BASE_ADMIN_URL = "http://localhost:4000/api/v1/admin"
 const AUTH_URL = "http://localhost:4000/api/v1/auth"
+const IMAGE_PREDICT_URL = "http://127.0.0.1:5000/predict"
 
 export const authEndpoints = {
   LOGIN_API: AUTH_URL + "/login",
@@ -19,4 +20,6 @@ export const operationAdminEndpoints = {
 }
 export const userEndpoints = {
   IMAGE_UPLOAD_API: BASE_USER_URL + "/imageUpload",
+  PREDICT_CATEGORY_API: IMAGE_PREDICT_URL,
+  GET_MODIFIED_DESC_API: BASE_USER_URL + "/getModifiedDescription",
 }

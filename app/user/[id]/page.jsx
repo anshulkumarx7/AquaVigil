@@ -85,20 +85,20 @@ const UserPage = () => {
                           {complaints?.length > 0 && complaints[currentIndex]?.category}
                         </p>
                       </div>
-                      <p className="flex justify-start text-justify h-[150px]  px-4 text-sm">
+                      <p className="flex justify-start text-justify h-[150px] overflow-y-scroll  px-4 text-sm">
                         {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Lorem ipsum dolor sit amet, consectetur adipiscing
                         elit.... */}
                         {
-                          complaints?.length > 0 && complaints[currentIndex]?.description.slice(0, 100)
+                          complaints?.length > 0 && complaints[currentIndex]?.description
                         }
                       </p>
                     </div>
                     <div className="justify-center rounded-2xl items-center w-[200px] flex h-[300px] p-2">
                       <Image
-                        src={complaints?.length > 0 ? complaints[currentIndex]?.imageUrl : "/blockage.jpg"}
+                        src={complaints?.length > 0 ? complaints[currentIndex]?.imageUrl : "/blockage.png"}
                         alt="complaint image"
                         width={200}
                         height={300}

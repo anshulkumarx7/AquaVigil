@@ -9,11 +9,13 @@ const {
 } = require("../controllers/Complaints/getAllComplaint")
 const { protect } = require("../controllers/Auth/auth")
 const { imageUpload } = require("../controllers/fileUpload")
+const { getDescription } = require("../controllers/Complaints/getDescription")
 
 router.post("/createComplaint", protect, createComplaint)
 router.get("/getAllComplaintsById", protect, getAllComplaintsById)
 router.get("/getAllComplaintsByLocation", protect, getAllComplaintsByLocation)
 router.get("/getAllComplaints", protect, getAllComplaints)
 router.post("/imageUpload", imageUpload)
+router.post("/getModifiedDescription", protect, getDescription)
 
 module.exports = router

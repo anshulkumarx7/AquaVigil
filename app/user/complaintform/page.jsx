@@ -7,10 +7,13 @@ import { useState } from "react";
 import GoogleMaps from "@/app/components/LocationPicker";
 import { uploadImage } from "@/app/services/users/imageUpload";
 import { createComplaint } from "@/app/services/operationUser/createComplaint"
+import { getCategory } from "@/app/services/operationUser/getImageCategoryAPI";
+import { getModifiedDescription } from "@/app/services/operationUser/getModifiedDescriptionAPI";
 
 const ComplaintForm = () => {
   const [locationFieldActive, setLocationFieldActive] = useState(false);
   const [imageURL, setImageURL] = useState(null);
+  const [imageError, setImageError] = useState(false);
   const [fetchedLocation, setFetchedLocation] = useState({
     success: false,
     data: "",
@@ -26,12 +29,25 @@ const ComplaintForm = () => {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    
+    // Check if the file is an image
+    if (!file.type.startsWith('image/')) {
+      console.error('Please select an image file.');
+      setImageError(true);
+      return;
+    }
+  
     console.log("Uploaded file:", file);
-    const imageResult = await uploadImage(file);
+  
+    // Create a new File object with the modified name
+    const modifiedFile = new File([file], `${Date.now()}${Math.random()}complaintImage.jpg`.replace(".", ""), { type: file.type });
+  
+    const imageResult = await uploadImage(modifiedFile);
     console.log("Image Result: ", imageResult);
-    setImageURL(imageResult.imageUrl)
+    setImageURL(imageResult.imageUrl);
     console.log("Image Url: ", imageResult.imageUrl);
   };
+
 
   const onSubmit = async (data) => {
 
@@ -39,6 +55,9 @@ const ComplaintForm = () => {
       alert("No image url set");
       return;
     }
+
+    const category = await getCategory(imageURL);
+    const modifiedDescription = await getModifiedDescription(data.description, category.result, user.token);
     
     console.log(data);
     const newData = {
@@ -46,11 +65,11 @@ const ComplaintForm = () => {
       address: fetchedLocation.data,
       state: fetchedLocation.address.state,
       phone: data.phNumber,
-      description: data.description,
+      description: modifiedDescription.result || data.description,
       location: fetchedLocation.latlng,
       imageUrl: imageURL,
       userId: user._id,
-      category: "blockage",
+      category: category.result || "Others",
     };
 
     console.log(newData);
@@ -209,7 +228,7 @@ const ComplaintForm = () => {
         </div>
         <div className=" w-[46vw] h-screen">
           <div className="flex flex-col items-center justify-center h-[100%]">
-            <p className="text-[#3A4264] mb-3 text-xl">{imageURL ? "Image Uploaded Successfully" : "Upload Image"}</p>
+            <p className="text-[#3A4264] mb-3 text-xl">{imageURL ? "Image Uploaded Successfully" : imageError ? "File type not supported" : "Upload Image"}</p>
 
             {locationFieldActive ? (
               <GoogleMaps setFetchedLocation={setFetchedLocation} />
