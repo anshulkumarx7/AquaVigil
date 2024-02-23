@@ -40,6 +40,7 @@ exports.getDescription = async (req, res) => {
       description: response.choices[0].message.content,
     });
   } catch (error) {
+    console.log("error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
