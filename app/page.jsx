@@ -3,7 +3,6 @@ import React from "react";
 import Navbar from "./components/Navbar";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Loader from "./components/Loader";
 
 const MainPage = () => {
   const router = useRouter();
