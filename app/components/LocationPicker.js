@@ -1,6 +1,8 @@
 "use client"
 import React, { useState } from "react"
 import GoogleMapReact from "google-map-react"
+import ComplaintModal from "./ComplaintModal"
+import { useSelector } from "react-redux"
 
 const GoogleMaps = ({
   defaultCenter = { lat: 40.756795, lng: -73.954298 }, // Default to New York else use user's location
@@ -10,11 +12,12 @@ const GoogleMaps = ({
   compplaintsData = [],
 }) => {
   const [currentCenter, setCurrentCenter] = useState(defaultCenter)
-
+  const [info, setInfo] = useState(false)
   const [myMarker, setMyMarker] = useState(null)
   const [myCityCircle, setMyCityCircle] = useState(null)
   const [lastGeocodeTime, setLastGeocodeTime] = useState(null) // Track last geocode fetch time
 
+  //   const { user } = useSelector((state) => state.auth.user)
   const handleMarkerDragEnd = async (newPosition, myCityCircle) => {
     try {
       const response = await fetch(
@@ -29,7 +32,10 @@ const GoogleMaps = ({
         setFetchedLocation({
           success: true,
           data: geocodeData.display_name,
-          address: { state: geocodeData.address.state , city: geocodeData.address.city },
+          address: {
+            state: geocodeData.address.state,
+            city: geocodeData.address.city,
+          },
           latlng: { lat: newPosition.lat(), lng: newPosition.lng() },
         })
       } else {
@@ -82,11 +88,20 @@ const GoogleMaps = ({
     } else {
       compplaintsData.forEach((complaint) => {
         const position = new google.maps.LatLng(complaint.lat, complaint.lng)
-        new google.maps.Marker({
+        const marker = new google.maps.Marker({
           position: position,
           map: map,
           title: "Hello World!",
           fillColor: "#FF0000",
+          onClick: () => {
+            console.log("Marker clicked")
+            setInfo(true)
+          },
+        })
+
+        marker.addListener("click", () => {
+          console.log("Marker clicked")
+          setInfo(true)
         })
       })
     }
@@ -120,7 +135,10 @@ const GoogleMaps = ({
             setFetchedLocation({
               success: true,
               data: geocodeData.display_name,
-              address: { state: geocodeData.address.state , city: geocodeData.address.city },
+              address: {
+                state: geocodeData.address.state,
+                city: geocodeData.address.city,
+              },
               latlng: { lat: latitude, lng: longitude },
             })
           } else {
@@ -146,9 +164,28 @@ const GoogleMaps = ({
   return (
     <div
       className={` ${
-        isAdminPage ? "h-[80vh] w-[79vw] rounded-md" : "h-screen w-full"
+        isAdminPage
+          ? `h-[80vh] w-[79vw] rounded-md transition-all duration-700 ease-in-out`
+          : "h-screen w-full"
       } relative`}
     >
+      {info && (
+        <div
+          className={`z-50 absolute flex justify-center items-center w-full h-full top-0 left-0 ${
+            info ? "backdrop-blur-xl" : "backdrop-blur-none"
+          }`}
+        >
+          <div className="flex flex-row justify-start gap-4">
+            <ComplaintModal />
+            <div
+              className="text-white h-12 cursor-pointer border-2 border-white p-2 rounded-md bg-red-500 hover:bg-red-600 transition-all duration-200 ease-in-out"
+              onClick={() => setInfo(false)}
+            >
+              Close
+            </div>
+          </div>
+        </div>
+      )}
       <GoogleMapReact
         bootstrapURLKeys={{ key: `${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}` }} // Replace with your API key
         defaultCenter={defaultCenter}
