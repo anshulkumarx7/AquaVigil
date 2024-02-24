@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 const MainPage = () => {
   const router = useRouter();
   return (
+    
     <div className="w-[100vw] h-full pt-10">
       <div className="max-w-[1080px] w-10/12 h-fit mx-auto">
         <Navbar />
