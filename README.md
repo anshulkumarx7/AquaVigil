@@ -29,10 +29,10 @@
 - Priority setting for tasks based on urgency and severity.
 - Track task progress and monitor resolution status.
 
-### Data Analytics and Reporting
-- Generate reports on the frequency and types of reported issues.
-- Analyze trends to identify recurring problems and allocate resources effectively.
-- Visual representation of data through graphs and charts for better insights.
+### Classifying model
+- Employed Python, TensorFlow, and Keras to construct a Convolutional Neural Network (CNN) for image classification. 
+- Classified waterbody images into pits and flooded areas, implementing preprocessing, model training, and evaluation showcasing proficiency in deep learning techniques and model development.
+- Used adam optimiser, binaryCrossEntropy loss function and accuracy performance metrics to train model.
 
 ### Knowledge Base
 - Repository of information related to common water issues, solutions, and preventive measures.
