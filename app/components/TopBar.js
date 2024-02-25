@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -17,16 +18,22 @@ const TopBar = ({ setIsListView, isListView }) => {
       <div className="h-[5vh] w-[36vw] flex gap-[30px]">
         <div className="w-[19.58vw] h-[5vh] flex items-center justify-between">
           <div className="w-[10.14vw] h-[5vh] flex gap-2 justify-center items-center rounded-md border-[1px] border-gray-200 cursor-pointer transition-all duration-200">
-            <div className="h-[20px] w-[20px] border-gray-500 border-[1px]"></div>
+            <div className="h-[20px] w-[20px]">
+              <Image src="/Calendar.png" alt="calendar" width={20} height={20} />
+            </div>
             <p className="h-[12px] w-[100px] text-[12px]">{new Date().toLocaleDateString()}</p>
           </div>
 
           <div className="w-[5vh] h-[5vh] flex gap-2 justify-center items-center rounded-md border-[1px] border-gray-200 ml-10 cursor-pointer transition-all duration-200">
-            <div className="h-[20px] w-[20px] border-gray-500 border-[1px]"></div>
+            <div className="h-[20px] w-[20px]">
+              <Image src="/settings.png" alt="settings" width={20} height={20} />
+            </div>
           </div>
 
           <div className="w-[5vh] h-[5vh] flex gap-2 justify-center items-center rounded-md border-[1px] border-gray-200 cursor-pointer transition-all duration-200">
-            <div className="h-[20px] w-[20px] border-gray-500 border-[1px]"></div>
+            <div className="h-[20px] w-[20px]">
+              <Image src="/bell.png" alt="noti" width={20} height={20} />
+            </div>
           </div>
         </div>
 

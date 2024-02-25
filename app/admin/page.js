@@ -5,35 +5,30 @@ import Sidebar from "../components/Sidebar"
 import TopBar from "../components/TopBar"
 import GoogleMaps from "../components/LocationPicker"
 import EmployeeList from "../components/EmployeeList"
-import { getAllcomplaints } from "../services/operationAdmin/getAllComplaintsAPI"
+import { useSelector } from "react-redux"
+import { getAllcomplaints } from "../services/operationUser/getAllComplaintAPI"
 const AdminPage = () => {
+  const user = useSelector((state) => state.auth.user)
   const [isListView, setIsListView] = useState(true)
-  const [complaints, setComplaints] = useState([
-    { lat: 40.766537, lng: -73.941052 },
-    { lat: 40.743053, lng: -73.972093 },
-    { lat: 40.789975, lng: -73.926267 },
-    { lat: 40.720212, lng: -73.991235 },
-    { lat: 40.803401, lng: -73.900524 },
-    { lat: 40.730678, lng: -74.005612 },
-    { lat: 40.774294, lng: -73.963849 },
-    { lat: 40.715725, lng: -73.935617 },
-    { lat: 40.797127, lng: -73.987421 },
-    { lat: 40.752949, lng: -73.894895 },
-  ])
-  useEffect(async () => {
-    const result = await getAllcomplaints()
-    console.log("Complaints: ", result)
+  const [complaints, setComplaints] = useState([])
+  const [employeeListView, setEmployeeListView] = useState(false)
 
-    let res = []
-    for (let i = 0; i < result.result.length; i++) {
-      res.push({
-        lat: result.result[i].location.lat,
-        lng: result.result[i].location.lng,
-      })
+  async function fetchComplaints() {
+    console.log("User in admin page: ", user)
+    const response = await getAllcomplaints(user?.token)
+    console.log("Complaints Response: ", response)
+    if (response?.success) {
+      const data = response?.result
+      setComplaints(data)
+      console.log("Complaints: ", complaints)
     }
-    setComplaints(res)
-    return () => {}
+  }
+
+  useEffect(() => {
+    fetchComplaints()
   }, [])
+
+
   return (
     <div className="flex items-center justify-center gap-3 overflow-y-hidden bg-[#F5F7FD]">
       <div className="">
@@ -41,11 +36,11 @@ const AdminPage = () => {
       </div>
       <div className="w-[79vw] h-screen flex flex-col items-center p-2 justify-evenly">
         <TopBar setIsListView={setIsListView} isListView={isListView} />
-        {isListView ? (
-          //   <ListView />
-          <EmployeeList />
+        {employeeListView ? <EmployeeList setEmployeeListView={setEmployeeListView}/> : isListView ? (
+            <ListView complaintList={complaints} setEmployeeListView={setEmployeeListView}/>
+          // <EmployeeList />
         ) : (
-          <GoogleMaps isAdminPage={true} compplaintsData={complaints} />
+          <GoogleMaps isAdminPage={true} compplaintsData={complaints} setEmployeeListView={setEmployeeListView}/>
         )}
       </div>
     </div>

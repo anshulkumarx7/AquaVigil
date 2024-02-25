@@ -63,7 +63,19 @@ exports.getAllComplaints = async (req, res) => {
   try {
     const client = getClient()
     const complaints = client.db().collection(database)
-    const result = await complaints.find({}).toArray();
+    const result = await complaints.aggregate([
+      {
+        $lookup: {
+          from: userDatabase,
+          localField: "userId",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      {
+        $unwind: "$user"
+      }
+    ]).toArray();
 
     res.status(200).json({
       success: true,

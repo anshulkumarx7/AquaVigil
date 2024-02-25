@@ -10,12 +10,15 @@ const GoogleMaps = ({
   setFetchedLocation,
   isAdminPage = false,
   compplaintsData = [],
+  setEmployeeListView,
 }) => {
+  const user = useSelector((state) => state.auth.user)
   const [currentCenter, setCurrentCenter] = useState(defaultCenter)
   const [info, setInfo] = useState(false)
   const [myMarker, setMyMarker] = useState(null)
   const [myCityCircle, setMyCityCircle] = useState(null)
   const [lastGeocodeTime, setLastGeocodeTime] = useState(null) // Track last geocode fetch time
+  const [complaint, setComplaint] = useState(null)
 
   //   const { user } = useSelector((state) => state.auth.user)
   const handleMarkerDragEnd = async (newPosition, myCityCircle) => {
@@ -87,7 +90,7 @@ const GoogleMaps = ({
       setMyMarker(newMarker)
     } else {
       compplaintsData.forEach((complaint) => {
-        const position = new google.maps.LatLng(complaint.lat, complaint.lng)
+        const position = new google.maps.LatLng(complaint.location.lat, complaint.location.lng)
         const marker = new google.maps.Marker({
           position: position,
           map: map,
@@ -95,12 +98,14 @@ const GoogleMaps = ({
           fillColor: "#FF0000",
           onClick: () => {
             console.log("Marker clicked")
+            setComplaint(complaint)
             setInfo(true)
           },
         })
 
         marker.addListener("click", () => {
           console.log("Marker clicked")
+          setComplaint(complaint)
           setInfo(true)
         })
       })
@@ -176,7 +181,7 @@ const GoogleMaps = ({
           }`}
         >
           <div className="flex flex-row justify-start gap-4">
-            <ComplaintModal />
+            <ComplaintModal complaint={complaint} setEmployeeListView={setEmployeeListView}/>
             <div
               className="text-white h-12 cursor-pointer border-2 border-white p-2 rounded-md bg-red-500 hover:bg-red-600 transition-all duration-200 ease-in-out"
               onClick={() => setInfo(false)}
@@ -192,7 +197,7 @@ const GoogleMaps = ({
         defaultZoom={defaultZoom}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => isLoaded(map, maps)}
-        center={!isAdminPage ? currentCenter : compplaintsData[0]} // later we have to change this to admin's coordinates or user's
+        center={!isAdminPage ? currentCenter : user.location.latlng} // later we have to change this to admin's coordinates or user's
       />
       {!isAdminPage && (
         <div

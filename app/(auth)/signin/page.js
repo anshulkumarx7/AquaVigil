@@ -33,10 +33,11 @@ export default function Home() {
       console.log(data)
       // let result = await loginUser(data)
       let result = await dispatch(UserLogin(data));
-      console.log("Result: ", result)
+      console.log("Result of Login: ", result)
 
       if (result.success) {
-        router.replace(`/user/${result.token}`)
+        if (result.type === "admin") router.replace("/admin")
+        else router.replace(`/user/${result.token}`)
       }
 
       if (!result) throw new Error("Login failed")

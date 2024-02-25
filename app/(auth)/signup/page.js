@@ -7,8 +7,10 @@ import * as yup from "yup"
 import { useState } from "react"
 import GoogleMaps from "../../components/LocationPicker"
 import { registerUser } from "../../services/auth/auth"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
+  const router = useRouter()
   const [locationFieldActive, setLocationFieldActive] = useState(false)
   const [fetchedLocation, setFetchedLocation] = useState({
     success: false,
@@ -55,6 +57,12 @@ export default function Home() {
       }
       console.log(newData)
       let result = await registerUser(newData)
+
+      console.log("Result of Registration: ", result)
+
+      if (result.success) {
+        router.replace("/signin")
+      }
 
       if (!result) throw new Error("Registration failed")
     } catch (error) {
