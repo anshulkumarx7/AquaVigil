@@ -1,5 +1,5 @@
-import { apiConnector } from "../../apiConnector"
-import { operationAdminEndpoints } from "../../api"
+import { apiConnector } from "../apiConnector"
+import { operationAdminEndpoints } from "../api"
 import { toast } from "react-hot-toast"
 const { GET_ALL_COMPLAINTS_API } = operationAdminEndpoints
 
