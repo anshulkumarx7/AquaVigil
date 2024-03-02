@@ -1,31 +1,38 @@
-"use client"
-import React from 'react'
+import Link from "next/link";
+import React from "react";
 
-const AdminSidebar = () => {
-    const [selectedCriteria, setSelectedCriteria] = React.useState([]);
+const AdminSidebar = ({selectedCriteria, setSelectedCriteria, setDate}) => {
+    const handleSelectedCriteria = (event) => {
+        const criteriaId = event.target.id;
+        if (event.target.checked) {
+            setSelectedCriteria([...selectedCriteria, criteriaId]);
+        } else {
+            setSelectedCriteria(selectedCriteria.filter((id) => id !== criteriaId));
+        }
+    };
 
-    const handleSelectedCriteria = () => {
-        setSelectedCriteria([...selectedCriteria, event.target.id])
-        console.log(selectedCriteria)
-    }
-  return (
-    <div className="flex flex-col ">
-        <label for="criteria1">Criteria1</label>
-        <input onChange={handleSelectedCriteria} type="checkbox" id="criteria1" />
+    const handleDateChange = (event) => {
+        const date = event.target.value
+            .split("-")
+            .reverse()
+            .map((str) => parseInt(str, 10).toString())
+            .join("/");
+        setDate(date);
+    };
 
-        <label for="criteria2">Criteria2</label>
-        <input onChange={handleSelectedCriteria} type="checkbox" id="criteria2" />
+    return (
+        <div className="flex flex-col ">
+            <label htmlFor="pit">Pit</label>
+            <input onChange={handleSelectedCriteria} type="checkbox" id="pit" />
 
-        <label for="criteria3">Criteria3</label>
-        <input onChange={handleSelectedCriteria} type="checkbox" id="criteria3" />
+            <label htmlFor="flood">Flood</label>
+            <input onChange={handleSelectedCriteria} type="checkbox" id="flood" />
 
-        <label for="criteria4">Criteria4</label>
-        <input onChange={handleSelectedCriteria} type="checkbox" id="criteria4" />
+            <label htmlFor="Date">Date</label>
+            <input onChange={handleDateChange} type="date" id="Date" />
 
-        <label for="criteria5">Criteria5</label>
-        <input onChange={handleSelectedCriteria} type="checkbox" id="criteria5" />
-    </div>
-  )
-}
+        </div>
+    );
+};
 
-export default AdminSidebar
+export default AdminSidebar;

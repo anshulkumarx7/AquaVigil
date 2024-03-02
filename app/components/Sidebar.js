@@ -1,31 +1,27 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { LogoutUser } from "@/redux/slices/Auth";
-import { useRouter, usePathname } from "next/navigation";
+import {useDispatch, useSelector} from "react-redux";
+import {LogoutUser} from "@/redux/slices/Auth";
+import {useRouter, usePathname} from "next/navigation";
 import AdminSidebar from "./AdminSidebar";
-const Sidebar = () => {
-  const user = useSelector((state) => state.auth.user);
 
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const pathname = usePathname();
+const Sidebar = ({selectedCriteria, setSelectedCriteria, setDate}) => {
+    const user = useSelector((state) => state.auth.user);
 
-  const path = pathname.split("/");
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const pathname = usePathname();
 
-  const handleLogout = () => {
-    router.replace("/signin");
-    dispatch(LogoutUser());
-  };
+    const path = pathname.split("/");
 
-  let Home = true;
-  if (
-    pathname === "/user/complaintform" ||
-    path.at(-1) === "status" ||
-    path.at(-1) === "profile"
-  )
-    Home = false;
+    const handleLogout = () => {
+        router.replace("/signin");
+        dispatch(LogoutUser());
+    };
+
+    let Home = true;
+    if (pathname === "/user/complaintform" || path.at(-1) === "status" || path.at(-1) === "profile") Home = false;
 
   return (
     <div className="sidebar relative w-[18vw] ml-3 flex flex-col items-center justify-center gap-1 h-screen">
@@ -57,8 +53,6 @@ const Sidebar = () => {
             height={46}
             priority
           />
-          {/* sidebar */}
-          
           <h3 className="ml-1">Home</h3>
         </div>
         <div
@@ -109,9 +103,6 @@ const Sidebar = () => {
           <h3 className="ml-1">Profile</h3>
         </div>
       </div>
-      {/* {
-        pathname === "/admin" && <AdminSidebar />
-      } */}
       <div className="fixed bottom-12 ">
         <div
           onClick={handleLogout}
