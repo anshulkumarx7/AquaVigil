@@ -25,7 +25,7 @@ exports.createComplaint = async (req, res) => {
       address: address,
       imageUrl: imageUrl,
       category: category,
-      status: "assigned",
+      status: "pending",
       employeeId: [],
       location: location,
       phone: phone,

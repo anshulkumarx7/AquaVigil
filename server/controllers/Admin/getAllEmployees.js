@@ -6,7 +6,16 @@ exports.getAllEmployees = async (req, res) => {
     const client = getClient()
     const Employee = client.db().collection(EmployeeDb)
     const bossId = req.userId
-    const result = await Employee.find({ bossId: bossId }).toArray()
+    const bossIdToString = bossId.toString()
+    const result = await Employee.find({ bossId: bossIdToString }).toArray()
+    // const result = await Employee.find({ bossId: bossId }).toArray()
+
+    if (!result) {
+      res.status(400).json({
+        success: false,
+        data: "No Employees Found.",
+      })
+    }
 
     res.status(200).json({
       success: true,

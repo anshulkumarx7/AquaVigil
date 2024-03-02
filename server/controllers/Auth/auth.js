@@ -50,46 +50,6 @@ exports.register = async (req, res) => {
   }
 }
 
-exports.employeeRegister = async (req, res) => {
-  try {
-    const { name, email, location, phone, bossId } = req.body
-    req.body.type = "employee"
-
-    if (!name || !email || !location || !phone || !bossId) {
-      return res.status(400).json({
-        success: false,
-        message: "Please enter all the fields",
-      })
-    }
-
-    const client = getClient()
-    const Employee = client.db().collection(EmployeeDb)
-    const exist_employee = await Employee.findOne({ email: email })
-
-    if (exist_employee) {
-      return res.status(400).json({
-        success: false,
-        message: "Employee already exists",
-      })
-    }
-
-    const new_employee = await Employee.insertOne(req.body)
-
-    if (new_employee) {
-      return res.status(200).json({
-        success: true,
-        message: "Employee registered successfully",
-      })
-    }
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    })
-  }
-}
-
 exports.login = async (req, res) => {
   const { email, password } = req.body
 

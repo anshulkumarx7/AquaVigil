@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { LogoutUser } from "@/redux/slices/Auth";
 import { useRouter, usePathname } from "next/navigation";
+import AdminSidebar from "./AdminSidebar";
 const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
 
@@ -56,6 +57,8 @@ const Sidebar = () => {
             height={46}
             priority
           />
+          {/* sidebar */}
+          
           <h3 className="ml-1">Home</h3>
         </div>
         <div
@@ -106,6 +109,9 @@ const Sidebar = () => {
           <h3 className="ml-1">Profile</h3>
         </div>
       </div>
+      {/* {
+        pathname === "/admin" && <AdminSidebar />
+      } */}
       <div className="fixed bottom-12 ">
         <div
           onClick={handleLogout}
