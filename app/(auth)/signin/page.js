@@ -1,17 +1,27 @@
-"use client"
-import Image from "next/image"
-import { useForm } from "react-hook-form"
+"use client";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
 // import {DevTool} from '@hookform/devtools'
 // import { loginUser } from "./services/auth/auth"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
-import { useDispatch } from "react-redux"
-import { UserLogin } from "@/redux/slices/Auth"
-import { useRouter } from "next/navigation"
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { ToggleOpen, UserLogin } from "@/redux/slices/Auth";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useState } from "react";
+
+const MessageSnackbar = dynamic(
+  () => import("@/app/components/MessageSnackbar"),
+  { ssr: false }
+);
 
 export default function Home() {
-  const dispatch = useDispatch()
-  const router = useRouter()
+  const open = useSelector((state) => state.auth.open);
+  console.log("Open: ", open)
+  const [errorOpen, setErrorOpen] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const schema = yup.object({
     email: yup.string().email("Email format is not valid !").required(""),
     password: yup
@@ -22,34 +32,37 @@ export default function Home() {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/,
         "Password must contain at least 1 lowercase, 1 uppercase, and 1 special character"
       ),
-  })
-  const { register, control, handleSubmit, formState, reset, setError } = useForm({
-    resolver: yupResolver(schema),
-  })
-  const { errors } = formState
+  });
+  const { register, control, handleSubmit, formState, reset, setError } =
+    useForm({
+      resolver: yupResolver(schema),
+    });
+  const { errors } = formState;
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
+      console.log(data);
       // let result = await loginUser(data)
       let result = await dispatch(UserLogin(data));
-      console.log("Result of Login: ", result)
+      console.log("Result of Login: ", result);
 
       if (result.success) {
-        if (result.type === "admin") router.replace("/admin")
-        else router.replace(`/user/${result.token}`)
+        dispatch(ToggleOpen());
+        if (result.type === "admin") router.replace("/admin");
+        else router.replace(`/user/${result.token}`);
       }
 
-      if (!result) throw new Error("Login failed")
+      if (!result) throw new Error("Login failed");
     } catch (error) {
-      console.log(error)
-      reset()
+      console.log(error);
+      reset();
       setError("afterSubmit", {
         ...error,
         message: error.message,
-      })
+      });
+      setErrorOpen(true);
     }
-  }
+  };
 
   return (
     <>
@@ -132,7 +145,9 @@ export default function Home() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center justify-center gap-2">
                     <input type="checkbox" name="check" id="check" />
-                    <label htmlFor="check" className="text-[#3A4264]">Keep me logged in</label>
+                    <label htmlFor="check" className="text-[#3A4264]">
+                      Keep me logged in
+                    </label>
                   </div>
                   <div className="">
                     <p className="text-[#234DF0] mr-3 cursor-pointer hover:underline">
@@ -170,6 +185,12 @@ export default function Home() {
           />
         </div>
       </div>
+      <MessageSnackbar
+        open={open}
+        message="Login Successful!"
+        autoHideDuration={5000}
+        severity={"success"}
+      />
     </>
-  )
+  );
 }

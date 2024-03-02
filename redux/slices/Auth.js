@@ -7,6 +7,7 @@ const initialState = {
   isLoading: false,
   type: "",
   user: null,
+  open: false,
 };
 
 const slice = createSlice({
@@ -25,6 +26,9 @@ const slice = createSlice({
       state.type = "";
       state.user = null;
     },
+    toggleOpen(state, actions) {
+      state.open = !state.open
+    }
   },
 });
 
@@ -59,4 +63,10 @@ export function LogoutUser() {
   return async (dispatch, getState) => {
     dispatch(slice.actions.signOut());
   };
+}
+
+export function ToggleOpen() {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.toggleOpen())
+  }
 }

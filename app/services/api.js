@@ -17,9 +17,13 @@ export const operationUserEndpoints = {
 export const operationAdminEndpoints = {
   GET_ALL_EMPLOYEES_API: BASE_ADMIN_URL + "/getAllEmployees",
   GET_ALL_COMPLAINTS_API: BASE_ADMIN_URL + "/getAllComplaints",
+  GET_UNIQUE_CATEGORIES_API: BASE_ADMIN_URL + "/getUniqueCategories",
+  MODIFY_COMPLAINT_API: BASE_ADMIN_URL + "/modifyComplaint",
+  REGISTER_EMPLOYEE_API: BASE_ADMIN_URL + "/registerEmployee",
+  MODIFY_COMPLAINT_API: BASE_ADMIN_URL + "/modifyComplaint"
 }
 export const userEndpoints = {
   IMAGE_UPLOAD_API: BASE_USER_URL + "/imageUpload",
-  PREDICT_CATEGORY_API: IMAGE_PREDICT_URL,
+  PREDICT_CATEGORY_API: BASE_USER_URL + "/getImageCategory",
   GET_MODIFIED_DESC_API: BASE_USER_URL + "/getModifiedDescription",
 }

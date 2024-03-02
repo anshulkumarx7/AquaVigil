@@ -1,15 +1,15 @@
 import { apiConnector } from "../apiConnector"
 import { operationAdminEndpoints } from "../api"
 
-const { GET_ALL_EMPLOYEES_API } = operationAdminEndpoints
+const { MODIFY_COMPLAINT_API } = operationAdminEndpoints
 
-export const getAllEmployees = async (token) => {
+export const modifyComplaint = async (token, data) => {
   try {
-    const result = await apiConnector("GET", GET_ALL_EMPLOYEES_API, null, {
+    const result = await apiConnector("POST", MODIFY_COMPLAINT_API, data, {
       authorization: "Bearer " + token,
     })
-    console.log("Employees Response: ", result)
 
+    console.log("Create Complaint Response: ", result)
     if (!result?.data?.success) throw new Error("Server Error")
 
     return {
@@ -18,7 +18,7 @@ export const getAllEmployees = async (token) => {
     }
   } catch (error) {
     return {
-      message: error.message,
+      result: error.message,
       success: false,
     }
   }

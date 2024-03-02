@@ -16,6 +16,7 @@ const AdminPage = () => {
     const [filteredComplaints, setFilteredComplaints] = useState([]);
     const [selectedCriteria, setSelectedCriteria] = useState([]);
     const [date, setDate] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState(null)
 
     async function fetchComplaints() {
         // console.log("User in admin page: ", user);
@@ -63,19 +64,24 @@ const AdminPage = () => {
             filteredData = filteredData.filter((complaint) => complaint.date === date);
         }
 
+        if (selectedStatus) {
+            filteredData = filteredData.filter((complaint) => complaint.status === selectedStatus.replace(" ", ""));
+        }
+
         setFilteredComplaints(filteredData);
     }, [selectedCriteria, complaints, date]);
 
 
-    // console.log("Selected Criteria: ", selectedCriteria);
-    // console.log("All complaints: ", complaints);
-    // console.log("Filtered data: ", filteredComplaints);
-    // console.log("Date in admin page: ", date);
+    console.log("Selected Criteria: ", selectedCriteria);
+    console.log("All complaints: ", complaints);
+    console.log("Filtered data: ", filteredComplaints);
+    console.log("Date in admin page: ", date);
+    console.log("Status in admin page:",selectedStatus?.replace(" ", ""));
 
     return (
         <div className="flex items-center justify-center gap-3 overflow-y-hidden bg-[#F5F7FD]">
             <div className="">
-                <Sidebar selectedCriteria={selectedCriteria} setSelectedCriteria={setSelectedCriteria} setDate={setDate} />
+                <Sidebar selectedCriteria={selectedCriteria} setSelectedCriteria={setSelectedCriteria} setDate={setDate} setSelectedStatus={setSelectedStatus}/>
             </div>
             <div className="w-[79vw] h-screen flex flex-col items-center p-2 justify-evenly">
                 <TopBar setIsListView={setIsListView} isListView={isListView} />

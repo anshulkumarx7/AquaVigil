@@ -197,7 +197,7 @@ const GoogleMaps = ({
         defaultZoom={defaultZoom}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => isLoaded(map, maps)}
-        center={!isAdminPage ? currentCenter : user.location.latlng} // later we have to change this to admin's coordinates or user's
+        center={!isAdminPage ? currentCenter : user?.location?.latlng || defaultCenter} // later we have to change this to admin's coordinates or user's
       />
       {!isAdminPage && (
         <div

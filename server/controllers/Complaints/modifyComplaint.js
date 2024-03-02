@@ -21,7 +21,10 @@ exports.modifyComplaint = async (req, res) => {
     const result = await complaints.updateOne(
       { _id: new ObjectId(complaintId) },
       { $set: { status: status, employeeId: [...employeeIdArray] } },
+      { new : true }
     )
+
+    console.log(result)
 
     
 

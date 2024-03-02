@@ -1,8 +1,19 @@
+"use client";
 import React from "react"
 import Image from "next/image"
+import { useDispatch } from "react-redux";
+import { SetComplaint, SetOnEmployeeListView } from "@/redux/slices/Admin";
 
 const ComplaintModal = ({complaint, setEmployeeListView}) => {
   let { imageUrl, category, date, phone, address, description } = complaint
+  const dispatch = useDispatch();
+
+  function handleAssign() {
+    dispatch(SetComplaint(complaint))
+    setEmployeeListView(true)
+    dispatch(SetOnEmployeeListView(true))
+  }
+
   return (
     <div className="w-[35vw] max-h-[60vh] h-[60vh] overflow-y-scroll overflow-x-hidden bg-white flex flex-col items-center justify-start gap-20 border-2 rounded-md">
       <div className="w-[35vw] h-[20vh] object-cover relative">
@@ -56,7 +67,7 @@ const ComplaintModal = ({complaint, setEmployeeListView}) => {
             <button
               className="w-[14vw] h-[5vh] bg-[#234DF0] p-5 text-white flex items-center justify-center rounded-lg mt-3"
               type="submit"
-              onClick={() => setEmployeeListView(true)}
+              onClick={ handleAssign }
             >
               Assign
             </button>

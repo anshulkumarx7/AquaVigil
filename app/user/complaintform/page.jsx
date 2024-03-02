@@ -6,14 +6,22 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import GoogleMaps from "@/app/components/LocationPicker";
 import { uploadImage } from "@/app/services/users/imageUpload";
-import { createComplaint } from "@/app/services/operationUser/createComplaint"
+import { createComplaint } from "@/app/services/operationUser/createComplaint";
 import { getCategory } from "@/app/services/operationUser/getImageCategoryAPI";
 import { getModifiedDescription } from "@/app/services/operationUser/getModifiedDescriptionAPI";
+import dynamic from "next/dynamic";
+
+const MessageSnackbar = dynamic(
+  () => import("@/app/components/MessageSnackbar"),
+  { ssr: false }
+);
 
 const ComplaintForm = () => {
   const [locationFieldActive, setLocationFieldActive] = useState(false);
   const [imageURL, setImageURL] = useState(null);
   const [imageError, setImageError] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [notSuccessOpen, setNotSuccessOpen] = useState(false);
   const [fetchedLocation, setFetchedLocation] = useState({
     success: false,
     data: "",
@@ -23,42 +31,49 @@ const ComplaintForm = () => {
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
   console.log("Token: ", token);
-  
+
   const { register, handleSubmit, formState } = useForm();
   const { errors } = formState;
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    
+
     // Check if the file is an image
-    if (!file.type.startsWith('image/')) {
-      console.error('Please select an image file.');
+    if (!file.type.startsWith("image/")) {
+      console.error("Please select an image file.");
       setImageError(true);
       return;
     }
-  
+
     console.log("Uploaded file:", file);
-  
+
     // Create a new File object with the modified name
-    const modifiedFile = new File([file], `${Date.now()}${Math.random()}complaintImage.jpg`.replace(".", ""), { type: file.type });
-  
+    const modifiedFile = new File(
+      [file],
+      `${Date.now()}${Math.random()}complaintImage.jpg`.replace(".", ""),
+      { type: file.type }
+    );
+
     const imageResult = await uploadImage(modifiedFile);
     console.log("Image Result: ", imageResult);
     setImageURL(imageResult.imageUrl);
     console.log("Image Url: ", imageResult.imageUrl);
   };
 
-
   const onSubmit = async (data) => {
-
     if (!imageURL) {
       alert("No image url set");
       return;
     }
 
-    const category = await getCategory(imageURL);
-    const modifiedDescription = await getModifiedDescription(data.description, category.result, user.token);
-    
+    const category = await getCategory(user?.token, imageURL);
+    console.log(category);
+    const modifiedDescription = await getModifiedDescription(
+      data.description,
+      category.result,
+      user.token
+    );
+
     console.log(data);
     const newData = {
       name: data.name,
@@ -73,10 +88,13 @@ const ComplaintForm = () => {
     };
 
     console.log(newData);
-    const result = await createComplaint(token, newData)
-    if (!result) return console.log("Complaint not created")
-    console.log("New Complaint res: ", result)
-
+    const result = await createComplaint(token, newData);
+    if (!result) {
+      setNotSuccessOpen(true)
+      return console.log("Complaint not created");
+    }
+    console.log("New Complaint res: ", result);
+    setSuccessOpen(true)
   };
   return (
     <>
@@ -228,7 +246,13 @@ const ComplaintForm = () => {
         </div>
         <div className=" w-[46vw] h-screen">
           <div className="flex flex-col items-center justify-center h-[100%]">
-            <p className="text-[#3A4264] mb-3 text-xl">{imageURL ? "Image Uploaded Successfully" : imageError ? "File type not supported" : "Upload Image"}</p>
+            <p className="text-[#3A4264] mb-3 text-xl">
+              {imageURL
+                ? "Image Uploaded Successfully"
+                : imageError
+                ? "File type not supported"
+                : "Upload Image"}
+            </p>
 
             {locationFieldActive ? (
               <GoogleMaps setFetchedLocation={setFetchedLocation} />
@@ -237,7 +261,7 @@ const ComplaintForm = () => {
                 <label htmlFor="file-upload">
                   <Image
                     unoptimized
-                    src={ imageURL ? imageURL :"/upload_img.svg"}
+                    src={imageURL ? imageURL : "/upload_img.svg"}
                     alt="Google Logo"
                     className="w-[33vw] h-[52vh]"
                     width={5}
@@ -247,12 +271,31 @@ const ComplaintForm = () => {
                   ></Image>
                 </label>
 
-                <input type="file" id="file-upload" accept="image/*" hidden onChange={handleFileChange}/>
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
               </>
             )}
           </div>
         </div>
       </div>
+      <MessageSnackbar
+        open={successOpen}
+        message="complaint Created Successfully!"
+        autoHideDuration={5000}
+        severity={"success"}
+      />
+
+<MessageSnackbar
+        open={notSuccessOpen}
+        message="Complaint Creation Failure!"
+        autoHideDuration={5000}
+        severity={"success"}
+      />
     </>
   );
 };
