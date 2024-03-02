@@ -123,7 +123,7 @@ export default function Home() {
                   Password*
                 </label>
                 <input
-                  type="password"
+                  type="text"
                   id="password"
                   {...register("password")}
                   className="w-[27vw] h-[4vh] border-[#3B2C4DE] border-2 p-4 mt-2"
@@ -132,7 +132,7 @@ export default function Home() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center justify-center gap-2">
                     <input type="checkbox" name="check" id="check" />
-                    <p className="text-[#3A4264]">Keep me logged in</p>
+                    <label htmlFor="check" className="text-[#3A4264]">Keep me logged in</label>
                   </div>
                   <div className="">
                     <p className="text-[#234DF0] mr-3 cursor-pointer hover:underline">
