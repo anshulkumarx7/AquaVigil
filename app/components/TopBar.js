@@ -15,7 +15,7 @@ const TopBar = ({setIsListView, isListView}) => {
     return (
         <div className="h-[8vh] w-[79vw] flex justify-between px-[2vw] items-center bg-white rounded-lg">
             <div className="w-[12.22vw] h-[5vh] flex gap-2 items-center cursor-pointer transition-all duration-200">
-                <div className="h-[44px] w-[44px] rounded-full bg-gray-600"></div>
+                <Image src="/user.png" width={30} height={30} className="h-[44px] w-[44px] rounded-full"></Image>
                 <div className="flex flex-col h-[44px] w-[8.75vw] justify-between">
                     <p className="text-[#3A4264] font-semibold">{user?.name}</p>
                     <p className="text-[#8DA6CD] text-xs">{user?.type}</p>
@@ -70,3 +70,4 @@ const TopBar = ({setIsListView, isListView}) => {
 };
 
 export default TopBar;
+

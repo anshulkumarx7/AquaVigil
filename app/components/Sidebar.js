@@ -7,6 +7,7 @@ import {useRouter, usePathname} from "next/navigation";
 import AdminSidebar from "./AdminSidebar";
 import EmployeeListSidebar from "./EmployeeListSidebar";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const MessageSnackbar = dynamic(() => import("@/app/components/MessageSnackbar"), {ssr: false});
 
@@ -36,7 +37,7 @@ const Sidebar = ({selectedCriteria, setSelectedCriteria, setDate, setSelectedSta
             <div className="">
                 <div className="absolute top-[5%] left-[12%] flex items-center gap-2">
                     <Image src="/logo.svg" alt="Vercel Logo" className=" w-[2vw]" width={200} height={46} priority />
-                    <h2 className="text-black font-medium text-xl">AquaVigil</h2>
+                    <Link href="/" className="text-black font-medium text-xl">AquaVigil</Link>
                 </div>
             </div>
             {pathname.startsWith("/user") && (
