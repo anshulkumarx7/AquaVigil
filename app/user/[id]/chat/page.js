@@ -100,7 +100,7 @@ const Chatbot = () => {
                         </button>
                         <ul className="history p-[10px] m-[10px] h-[100%] max-h-[calc(100vh - 45px)] overflow-y-scroll scrollbar-hide">
                             {uniquetitles?.map((uniquetitle, index) => (
-                                <li className="py-[15px] px-0" key={index} onClick={() => handleClickToSetCurrentTitle(uniquetitle)}>
+                                <li className="py-[15px] px-0 text-white font-semibold" key={index} onClick={() => handleClickToSetCurrentTitle(uniquetitle)}>
                                     {uniquetitle.slice(0, 15) + "..."}
                                 </li>
                             ))}
