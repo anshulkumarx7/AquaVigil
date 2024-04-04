@@ -65,8 +65,9 @@ const Sidebar = ({selectedCriteria, setSelectedCriteria, setDate, setSelectedSta
                         <h3 className="ml-1">Status</h3>
                     </div>
                     <div
+                        onClick={() => router.push(`/user/${user?.token}/profile`)}
                         className={`w-[14vw] h-[5vh] flex ${
-                            pathname === "/user/profile" && "text-white bg-[#7B94F6]"
+                            path.at(-1) === "profile" && "text-white bg-[#7B94F6]"
                         } items-center justify-start p-4 mt-2 rounded-md text-[#3A4264] cursor-pointer hover:bg-gray-300`}>
                         <Image src="/User.svg" alt="Vercel Logo" className=" w-[1.3vw]" width={200} height={46} priority />
                         <h3 className="ml-1">Profile</h3>
