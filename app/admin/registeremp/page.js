@@ -41,7 +41,7 @@ export default function RegisterEmployee() {
     const {errors} = formState;
 
     console.log("Field Active:", locationFieldActive);
-
+    
     const onSubmit = async (data) => {
         console.log(data);
         try {
@@ -51,10 +51,12 @@ export default function RegisterEmployee() {
                 phone: data.phNumber,
                 email: data.email,
                 password: data.password,
-                location: fetchedLocation,
+                location: fetchedLocation.data,
                 bossId:user?._id,
             };
+
             console.log(newData);
+            console.log(fetchedLocation);
             let result = await registerEmployee(newData,user?.token);
 
             console.log("Result of Registration: ", result);
@@ -66,11 +68,11 @@ export default function RegisterEmployee() {
             if (!result) throw new Error("Registration failed");
         } catch (error) {
             console.log(error);
-            reset();
-            setError("afterSubmit", {
-                ...error,
-                message: error.message,
-            });
+            // reset();
+            // setError("afterSubmit", {
+            //     ...error,
+            //     message: error.message,
+            // });
         }
     };
     return (
