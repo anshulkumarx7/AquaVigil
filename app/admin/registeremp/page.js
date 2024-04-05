@@ -7,9 +7,9 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {useState} from "react";
 import GoogleMaps from "../../components/LocationPicker";
-import {registerUser} from "../../services/auth/auth";
+import {registerEmployee} from "../../services/auth/auth";
 import {useRouter} from "next/navigation";
-
+import {useDispatch, useSelector} from "react-redux";
 export default function RegisterEmployee() {
     const router = useRouter();
     const [locationFieldActive, setLocationFieldActive] = useState(false);
@@ -18,6 +18,9 @@ export default function RegisterEmployee() {
         data: "",
         latlng: {lat: 0, lng: 0},
     });
+
+    const { user }=useSelector((state) => state.auth);
+    // console.log(user._id);
     const schema = yup.object({
         name: yup.string().required("Name is required"),
         age: yup.number().required("Age is required").positive("Age must be a positive number").integer("Age must be an integer"),
@@ -44,18 +47,20 @@ export default function RegisterEmployee() {
         try {
             const newData = {
                 name: data.name,
+                age:data.age,
                 phone: data.phNumber,
                 email: data.email,
                 password: data.password,
                 location: fetchedLocation,
+                bossId:user?._id,
             };
             console.log(newData);
-            let result = await registerUser(newData);
+            let result = await registerEmployee(newData,user?.token);
 
             console.log("Result of Registration: ", result);
 
             if (result.success) {
-                router.replace("/signin");
+                router.push("/admin");
             }
 
             if (!result) throw new Error("Registration failed");

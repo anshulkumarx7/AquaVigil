@@ -22,7 +22,7 @@ const EmployeeList = ({setEmployeeListView}) => {
             setEmployees(res.result);
         }
     }
-
+    console.log(employees);
     useEffect(() => {
         fetchEmployees();
     }, []);

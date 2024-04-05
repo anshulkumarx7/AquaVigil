@@ -1,11 +1,11 @@
 "use client";
 import { toast } from "react-hot-toast"
 
-import { authEndpoints } from "../api"
+import { authEndpoints,operationAdminEndpoints } from "../api"
 import { apiConnector } from "../apiConnector"
 
 const { LOGIN_API, REGISTER_API } = authEndpoints
-
+const { REGISTER_EMPLOYEE_API } = operationAdminEndpoints
 export const loginUser = async (data) => {
   const toastId = toast.loading("Logging in...")
 
@@ -38,6 +38,36 @@ export const registerUser = async (data) => {
   const toastId = toast.loading("Registering...")
   try {
     const response = await apiConnector("POST", REGISTER_API, data)
+    console.log("Register response: ", response)
+
+    if (!response?.data?.success) {
+      toast.error(response.data.message)
+      throw new Error("Registration failed")
+    }
+
+    toast.success("Registration successful")
+    toast.dismiss(toastId)
+    return {
+      success: response?.data?.success,
+      result: response?.data?.message,
+    }
+  } catch (error) {
+    toast.dismiss(toastId)
+    toast.error("Registration api error")
+    return {
+      result: error.message,
+      success: false,
+    }
+  }
+}
+
+
+export const registerEmployee = async (data,token) => {
+  const toastId = toast.loading("Registering...")
+  try {
+    const response = await apiConnector("POST", REGISTER_EMPLOYEE_API, data, {
+      authorization: "Bearer " + token,
+    })
     console.log("Register response: ", response)
 
     if (!response?.data?.success) {
